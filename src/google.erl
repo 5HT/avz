@@ -3,6 +3,7 @@
 -include_lib("avz/include/avz.hrl").
 -include_lib("n2o/include/wf.hrl").
 -include_lib("kvs/include/users.hrl").
+-compile(export_all).
 -export(?API).
 -define(GPLUS_CLIENT_ID, case application:get_env(web, gplus_client_id) of {ok, Id} -> Id; _-> "" end).
 -define(GPLUS_COOKIE_POLICY, case application:get_env(web, gplus_cookiepolicy) of {ok, P} -> P; _-> "" end).
@@ -17,7 +18,7 @@ registration_data(Props, google, Ori)->
     Image = proplists:get_value(<<"image">>, Props),
     {Id, Ori#user{ display_name = proplists:get_value(<<"displayName">>, Props),
                    avatar = lists:nth(1,string:tokens(binary_to_list(proplists:get_value(<<"url">>, Image#struct.lst)), "?")),
-                   email = email_prop(Props,googleplus_id),
+                   email = email_prop(Props,google),
                    name = GivenName,
                    surname = FamilyName,
                    googleplus_id = Id,

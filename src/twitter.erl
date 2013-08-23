@@ -3,6 +3,7 @@
 -include_lib("n2o/include/wf.hrl").
 -include_lib("avz/include/avz.hrl").
 -include_lib("kvs/include/users.hrl").
+-compile(export_all).
 -export(?API).
 -define(CONSUMER_KEY, case application:get_env(web, tw_consumer_key) of {ok, K} -> K;_-> "" end).
 -define(CONSUMER_SECRET, case application:get_env(web, tw_consumer_secret) of {ok, S} -> S; _-> "" end).

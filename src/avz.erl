@@ -5,8 +5,9 @@
 -include_lib("n2o/include/wf.hrl").
 -include_lib("kvs/include/users.hrl").
 
-callback(Methods) -> [ M:callback() || M <- Methods].
-sdk(Methods) -> [ M:sdks() || M <- Methods].
+callbacks(Methods) -> [ M:callback() || M <- Methods].
+sdk(Methods) -> [ M:sdk() || M <- Methods].
+buttons(Methods) -> [ M:login_button() || M <- Methods].
 
 event(init) -> [];
 event(logout) -> wf:user(undefined), wf:redirect(?LOGIN_PAGE);

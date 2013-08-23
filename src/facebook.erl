@@ -3,8 +3,8 @@
 -include_lib("avz/include/avz.hrl").
 -include_lib("n2o/include/wf.hrl").
 -include_lib("kvs/include/users.hrl").
+-compile(export_all).
 -export(?API).
-
 -define(HTTP_ADDRESS, case application:get_env(web, http_address) of {ok, A} -> A; _ -> "" end).
 -define(FB_APP_ID, case application:get_env(web, fb_id) of {ok, Id} -> Id; _-> "" end).
 

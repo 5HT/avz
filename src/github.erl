@@ -3,6 +3,7 @@
 -include_lib("n2o/include/wf.hrl").
 -include_lib("kvs/include/users.hrl").
 -include_lib("avz/include/avz.hrl").
+-compile(export_all).
 -export(?API).
 
 -define(CLIENT_ID, case application:get_env(web, github_client_id) of {ok, K} -> K;_-> "" end).
