@@ -7,9 +7,9 @@
 -define(GPLUS_CLIENT_ID, case application:get_env(web, gplus_client_id) of {ok, Id} -> Id; _-> "" end).
 -define(GPLUS_COOKIE_POLICY, case application:get_env(web, gplus_cookiepolicy) of {ok, P} -> P; _-> "" end).
 
-api_event(plusLogin, Args, _)-> JSArgs = n2o_json:decode(Args), avz:login(googleplus, JSArgs#struct.lst).
+api_event(plusLogin, Args, _)-> JSArgs = n2o_json:decode(Args), avz:login(google, JSArgs#struct.lst).
 
-registration_data(Props, googleplus, Ori)->
+registration_data(Props, google, Ori)->
     Id = proplists:get_value(<<"id">>, Props),
     Name = proplists:get_value(<<"name">>, Props),
     GivenName = proplists:get_value(<<"givenName">>, Name#struct.lst),
