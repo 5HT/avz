@@ -23,14 +23,16 @@ registration_data(Props, google, Ori)->
                    googleplus_id = Id,
                    register_date = erlang:now(),
                    sex = proplists:get_value(gender, Props),
-                   status = ok }};
+                   status = ok }}.
 
 email_prop(Props, _) -> binary_to_list(proplists:get_value(<<"email">>, Props)).
 
 login_button()-> #panel{id=plusloginbtn, class=["btn-group"], body=
     #link{class=[btn, "btn-google-plus", "btn-large"], 
-        body=[#i{class=["icon-google-plus", "icon-large"]}, <<"Google">>] }};
+        body=[#i{class=["icon-google-plus", "icon-large"]}, <<"Google">>] }}.
 
+event(_) -> ok.
+callback() -> ok.
 sdk() ->
     wf:wire(#api{name=plusLogin, tag=plus}),
     #dtl{bind_script=false, file="google_sdk", ext="dtl", folder="priv/static/js",

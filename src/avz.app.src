@@ -1,0 +1,9 @@
+{application, avz,
+ [
+  {description, "AVZ AUTH"},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [kernel, stdlib]},
+  {mod, { avz_app, []}},
+  {env, []}
+ ]}.

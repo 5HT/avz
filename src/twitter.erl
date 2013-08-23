@@ -1,6 +1,7 @@
 -module(twitter).
 -author('Andrii Zadorozhnii').
 -include_lib("n2o/include/wf.hrl").
+-include_lib("avz/include/avz.hrl").
 -include_lib("kvs/include/users.hrl").
 -export(?API).
 -define(CONSUMER_KEY, case application:get_env(web, tw_consumer_key) of {ok, K} -> K;_-> "" end).
@@ -14,11 +15,13 @@ registration_data(Props, twitter, Ori)->
                     display_name = proplists:get_value(<<"screen_name">>, Props),
                     avatar = proplists:get_value(<<"profile_image_url">>, Props),
                     name = proplists:get_value(<<"name">>, Props),
-                    email = email_prop(Props,twitter_id),
+                    email = email_prop(Props,twitter),
                     surname = [],
                     twitter_id = Id,
                     register_date = erlang:now(),
                     status = ok }}.
+
+email_prop(Props, twitter) -> binary_to_list(proplists:get_value(<<"screen_name">>, Props)) ++ "@twitter.com".
 
 callback() ->
     Token = wf:q(<<"oauth_token">>),

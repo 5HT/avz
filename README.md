@@ -1,7 +1,7 @@
 AVZ Login System for N2O
 ========================
 
-Authentication methods N2O sites. Supports both JavaScript based
+Authentication methods for N2O sites. Supports both JavaScript based
 logins (like Google and Facebook) and redirect based OAuth logins (Twitter, Github)
 in a sane and simple manner. Compatible with but not limited to Nitrogen and N2O.
 

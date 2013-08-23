@@ -1,6 +1,7 @@
 -module(github).
 -author('Andrii Zadorozhnii').
 -include_lib("n2o/include/wf.hrl").
+-include_lib("kvs/include/users.hrl").
 -include_lib("avz/include/avz.hrl").
 -export(?API).
 
@@ -51,12 +52,20 @@ registration_data(Props, github, Ori) ->
     {Id, Ori#user{  username = binary_to_list(proplists:get_value(<<"login">>, Props)),
                     display_name = Name,
                     avatar = proplists:get_value(<<"avatar_url">>, Props),
-                    email = email_prop(Props, github_id),
+                    email = email_prop(Props, github),
                     name  = Name,
                     surname = [],
                     github_id = Id,
                     register_date = erlang:now(),
                     status = ok }}.
+
+email_prop(Props, github) ->
+        Mail = proplists:get_value(<<"email">>, Props),
+        error_logger:info_msg("Github Auth: Mail ~p Props ~p", [Mail,Props]),
+        case Mail of
+             null -> binary_to_list(proplists:get_value(<<"login">>, Props)) ++ "@github.com";
+             undefined -> binary_to_list(proplists:get_value(<<"login">>, Props)) ++ "@github.com";
+             _ -> "hacker@voxoz.com" end.
 
 login_button() -> #panel{ class=["btn-group"], body=
     #link{id=github_btn, class=[btn, "btn-large"], 

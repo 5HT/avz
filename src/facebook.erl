@@ -8,6 +8,7 @@
 -define(HTTP_ADDRESS, case application:get_env(web, http_address) of {ok, A} -> A; _ -> "" end).
 -define(FB_APP_ID, case application:get_env(web, fb_id) of {ok, Id} -> Id; _-> "" end).
 
+callback() -> ok.
 event({facebook,_}) -> ok.
 api_event(fbLogin, Args, _Term)-> JSArgs = n2o_json:decode(Args), avz:login(facebook, JSArgs#struct.lst).
 
