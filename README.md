@@ -22,6 +22,12 @@ API
     api_event/3          % Page Event for JavaScript based login methods
     callback/0           % Callback part of HTTP redirect based login methods
     registration_data/3  % Process Parameters
+    
+Usage
+-----
+
+Pretty short example is given at http://maxim.livejournal.com/421845.html (Russain) along
+with discussion how to design pages with N2O. Example of Login also could be found in [http://github.com/5HT/skyline](http://github.com/5HT/skyline) project.
 
 Credits
 -------
