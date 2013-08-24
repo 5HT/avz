@@ -17,7 +17,8 @@ registration_data(Props, google, Ori)->
     FamilyName = proplists:get_value(<<"familyName">>, Name#struct.lst),
     Image = proplists:get_value(<<"image">>, Props),
     {Id, Ori#user{ display_name = proplists:get_value(<<"displayName">>, Props),
-                   avatar = lists:nth(1,string:tokens(binary_to_list(proplists:get_value(<<"url">>, Image#struct.lst)), "?")),
+                   avatar = lists:nth(1,string:tokens(
+                       binary_to_list(proplists:get_value(<<"url">>, Image#struct.lst)), "?")),
                    email = email_prop(Props,google),
                    name = GivenName,
                    surname = FamilyName,
