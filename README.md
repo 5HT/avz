@@ -12,6 +12,7 @@ Supported Methods
 * Google
 * Facebook
 * Github
+* Microsoft
 
 API
 ---
