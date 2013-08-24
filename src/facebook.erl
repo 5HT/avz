@@ -42,6 +42,5 @@ sdk() ->
     wf:wire(#api{name=setFbIframe, tag=fb}),
     wf:wire(#api{name=fbAutoLogin, tag=fb}),
     wf:wire(#api{name=fbLogin, tag=fb}),
-  [ #panel{id="fb-root"},
-    #dtl{bind_script=false, file="facebook_sdk", ext="dtl", folder="priv/static/js",
+  [ #dtl{bind_script=false, file="facebook_sdk", ext="dtl", folder="priv/static/js",
         bindings=[{appid, ?FB_APP_ID},{channelUrl, ?HTTP_ADDRESS ++ "/static/channel.html"} ] } ].

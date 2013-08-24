@@ -18,6 +18,7 @@ event(Ev) ->  error_logger:info_msg("Page Event ~p",[Ev]).
 
 api_event(plusLogin, Args, Term) -> google:api_event(plusLogin, Args, Term);
 api_event(fbLogin, Args, Term)   -> facebook:api_event(fbLogin, Args, Term);
+api_event(winLogin, Args, Term)   -> microsoft:api_event(winLogin, Args, Term);
 api_event(Name, Args, Term)      -> error_logger:info_msg("Unknown API event: ~p ~p ~p",[Name, Args, Term]).
 
 login_user(User) -> wf:user(User), wf:redirect(?AFTER_LOGIN).

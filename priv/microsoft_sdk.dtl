@@ -1,0 +1,57 @@
+<script>
+
+WL.init({ client_id: "{{client}}", redirect_uri: "{{redirect}}" });
+//WL.Event.subscribe("auth.login", onLogin);
+//WL.Event.subscribe("auth.sessionChange", onSessionChange);
+
+function microsoft_login2() {
+    var session = WL.getSession();
+    if (session) {
+        console.log("You are already signed in!");
+    } else {
+        WL.login({ scope: "wl.signin" });
+    }
+}
+
+function microsoft_login() {
+
+    WL.login({ "scope": "wl.basic" }).then(
+        function (response) {
+            showUserData();
+        },
+        function (response) {
+            log("Could not connect, status = " + response.status);
+        }
+    );
+
+}
+
+function showUserData() {
+    WL.api({ path: "/me", method: "GET" }).then(
+        function (response) {
+            winLogin(JSON.stringify(response));
+        },
+        function (response) {
+            log("API call failed: " + JSON.stringify(response.error).replace(/,/g, "\n"));
+        }
+    );
+}
+
+function onLogin() {
+    var session = WL.getSession();
+    if (session) {
+        console.log("You are signed in!");
+        console.log("{{event}}");
+    }
+}
+ 
+function onSessionChange() {
+    var session = WL.getSession();
+    if (session) {
+        winLogin(session);
+        console.log("Your session has changed.");
+        console.log(session);
+    }
+}
+
+</script>
