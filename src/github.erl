@@ -12,7 +12,7 @@
 -define(AUTHORIZE_URI, ?OAUTH_URI ++ "/authorize").
 -define(ACCESS_TOKEN_URI, ?OAUTH_URI ++ "/access_token").
 -define(API_URI, "https://api.github.com").
--define(REQ_HEADER, [{"User-Agent", "Erlang Paas"}]).
+-define(REQ_HEADER, [{"User-Agent", "Erlang PaaS"}]).
 
 user(Props) -> api_call("/user", Props).
 
