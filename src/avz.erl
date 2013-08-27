@@ -24,6 +24,6 @@ api_event(Name, Args, Term)      -> error_logger:info_msg("Unknown API event: ~p
 login_user(User) -> wf:user(User), wf:redirect(?AFTER_LOGIN).
 login(Key, Args)-> case Args of [{error, E}|_Rest] -> error_logger:info_msg("oauth error: ~p", [E]);
     _ -> case kvs:get(user,Key:email_prop(Args,Key)) of
-              {ok,Existed} -> {Id, RegData} = Key:registration_data(Args, Key, Existed), login_user(RegData);
-              {error,_} -> {Id, RegData} = Key:registration_data(Args, Key, #user{}),
+              {ok,Existed} -> {_Id, RegData} = Key:registration_data(Args, Key, Existed), login_user(RegData);
+              {error,_} -> {_Id, RegData} = Key:registration_data(Args, Key, #user{}),
                   kvs:put(RegData), login_user(RegData) end end.
