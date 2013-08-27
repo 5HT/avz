@@ -23,7 +23,6 @@ api_event(_, Args, _)->
 registration_data(Props, microsoft, Ori)->
     error_logger:info_msg("Microsoft Login: ~p",[Props]),
     Id = proplists:get_value(<<"id">>, Props),
-    Name = proplists:get_value(<<"name">>, Props),
     GivenName = proplists:get_value(<<"first_name">>, Props),
     FamilyName = proplists:get_value(<<"last_name">>, Props),
     {Id, Ori#user{ display_name = proplists:get_value(<<"name">>, Props),
@@ -35,7 +34,7 @@ registration_data(Props, microsoft, Ori)->
                    sex = proplists:get_value(<<"gender">>, Props),
                    status = ok }}.
 
-email_prop(Props, _) -> binary_to_list(proplists:get_value(<<"id">>, Props)) ++ "@microsoft.com".
+email_prop(Props, _) -> binary_to_list(proplists:get_value(<<"id">>, Props)) ++ "@microsoft".
 
 login_button()-> #panel{class=["btn-group"], body=
     #link{id=microsoftbtn, class=[btn, "btn-microsoft", "btn-large"], 
