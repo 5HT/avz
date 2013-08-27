@@ -62,8 +62,9 @@ registration_data(Props, github, Ori) ->
 
 email_prop(Props, github) ->
     Mail = proplists:get_value(<<"email">>, Props),
-    case avz_validator:is_email(Mail) of
-        true -> Mail;
+    L = wf:to_list(Mail),
+    case avz_validator:is_email(L) of
+        true -> L;
         false -> binary_to_list(proplists:get_value(<<"login">>, Props)) ++ "@github"
     end.
 
