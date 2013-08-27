@@ -66,7 +66,7 @@ email_prop(Props, github) ->
         case Mail of
              null -> binary_to_list(proplists:get_value(<<"login">>, Props)) ++ "@github.com";
              undefined -> binary_to_list(proplists:get_value(<<"login">>, Props)) ++ "@github.com";
-             _ -> "hacker@voxoz.com" end.
+             M -> binary_to_list(M) end.
 
 login_button() -> #panel{ class=["btn-group"], body=
     #link{id=github_btn, class=[btn, "btn-large"], 
