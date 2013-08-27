@@ -1,5 +1,5 @@
 -record(struct, {lst=[]}).
--define(AFTER_LOGIN, "/account").
+-define(AFTER_LOGIN, case wf:config(login) of unknown -> "/account"; P -> P end).
 -define(LOGIN_PAGE, "/login").
 -define(METHODS, [facebook,google,github,twitter,microsoft]).
 -define(API,[sdk/0,               % JavaScript for page embedding for JavaScript based login methods
