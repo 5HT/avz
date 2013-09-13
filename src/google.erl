@@ -16,16 +16,18 @@ registration_data(Props, google, Ori)->
     GivenName = proplists:get_value(<<"givenName">>, Name#struct.lst),
     FamilyName = proplists:get_value(<<"familyName">>, Name#struct.lst),
     Image = proplists:get_value(<<"image">>, Props),
-    {Id, Ori#user{ display_name = proplists:get_value(<<"displayName">>, Props),
-                   avatar = lists:nth(1,string:tokens(
-                       binary_to_list(proplists:get_value(<<"url">>, Image#struct.lst)), "?")),
-                   email = email_prop(Props,google),
-                   name = GivenName,
-                   surname = FamilyName,
-                   googleplus_id = Id,
-                   register_date = erlang:now(),
-                   sex = proplists:get_value(gender, Props),
-                   status = ok }}.
+    Email = email_prop(Props,google),
+    Ori#user{   id = Email,
+                display_name = proplists:get_value(<<"displayName">>, Props),
+                avatar = lists:nth(1,string:tokens(
+                        binary_to_list(proplists:get_value(<<"url">>, Image#struct.lst)), "?")),
+                email = Email,
+                name = GivenName,
+                surname = FamilyName,
+                googleplus_id = Id,
+                register_date = erlang:now(),
+                sex = proplists:get_value(gender, Props),
+                status = ok }.
 
 email_prop(Props, _) -> binary_to_list(proplists:get_value(<<"email">>, Props)).
 

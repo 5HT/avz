@@ -11,19 +11,19 @@ buttons(Methods) -> [ M:login_button() || M <- Methods].
 
 event(init) -> [];
 event(logout) -> wf:user(undefined), wf:redirect(?LOGIN_PAGE);
-event(login) -> wf:redirect(?AFTER_LOGIN);
 event(to_login) -> wf:redirect(?LOGIN_PAGE);
+event({register, #user{}=U}) -> kvs:add(U), login_user(U);
+event({login, #user{}=U}) -> login_user(U);
 event({Method,Event}) -> Method:event({Method,Event});
 event(Ev) ->  error_logger:info_msg("Page Event ~p",[Ev]).
 
 api_event(plusLogin, Args, Term) -> google:api_event(plusLogin, Args, Term);
 api_event(fbLogin, Args, Term)   -> facebook:api_event(fbLogin, Args, Term);
-api_event(winLogin, Args, Term)   -> microsoft:api_event(winLogin, Args, Term);
+api_event(winLogin, Args, Term)  -> microsoft:api_event(winLogin, Args, Term);
 api_event(Name, Args, Term)      -> error_logger:info_msg("Unknown API event: ~p ~p ~p",[Name, Args, Term]).
 
 login_user(User) -> wf:user(User), wf:redirect(?AFTER_LOGIN).
 login(Key, Args)-> case Args of [{error, E}|_Rest] -> error_logger:info_msg("oauth error: ~p", [E]);
     _ -> case kvs:get(user,Key:email_prop(Args,Key)) of
-              {ok,Existed} -> {_Id, RegData} = Key:registration_data(Args, Key, Existed), login_user(RegData);
-              {error,_} -> {_Id, RegData} = Key:registration_data(Args, Key, #user{}),
-                  kvs:put(RegData), login_user(RegData) end end.
+              {ok,Existed} -> RegData = Key:registration_data(Args, Key, Existed), (wf_context:page_module()):event({login, RegData});
+              {error,_} -> RegData = Key:registration_data(Args, Key, #user{}), (wf_context:page_module()):event({register, RegData}) end end.

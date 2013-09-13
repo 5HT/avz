@@ -19,17 +19,19 @@ registration_data(Props, facebook, Ori)->
         undefined -> {1, 1, 1970};
         BD -> list_to_tuple([list_to_integer(X) || X <- string:tokens(binary_to_list(BD), "/")]) end,
     error_logger:info_msg("User Ori: ~p",[Ori]),
-    error_logger:info_msg("Props: ~p",[Props]), 
-    { proplists:get_value(<<"id">>, Props), 
-      Ori#user{ display_name = UserName,
+    error_logger:info_msg("Props: ~p",[Props]),
+    Id = proplists:get_value(<<"id">>, Props),
+    Email = email_prop(Props, facebook),
+    Ori#user{   id = Email,
+                display_name = UserName,
                 avatar = "https://graph.facebook.com/" ++ UserName ++ "/picture",
-                email = email_prop(Props, facebook_id),
+                email = Email,
                 name = proplists:get_value(<<"first_name">>, Props),
                 surname = proplists:get_value(<<"last_name">>, Props),
                 facebook_id = Id,
                 age = {element(3, BirthDay), element(1, BirthDay), element(2, BirthDay)},
                 register_date = erlang:now(),
-                status = ok }}.
+                status = ok }.
 
 email_prop(Props, _) -> binary_to_list(proplists:get_value(<<"email">>, Props)).
 

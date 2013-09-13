@@ -12,15 +12,17 @@
 registration_data(Props, twitter, Ori)->
     Id = proplists:get_value(<<"id_str">>, Props),
     UserName = binary_to_list(proplists:get_value(<<"screen_name">>, Props)),
-    {Id, Ori#user{  username = re:replace(UserName, "\\.", "_", [{return, list}]),
-                    display_name = proplists:get_value(<<"screen_name">>, Props),
-                    avatar = proplists:get_value(<<"profile_image_url">>, Props),
-                    name = proplists:get_value(<<"name">>, Props),
-                    email = email_prop(Props,twitter),
-                    surname = [],
-                    twitter_id = Id,
-                    register_date = erlang:now(),
-                    status = ok }}.
+    Email = email_prop(Props,twitter),
+    Ori#user{   id = Email,
+                username = re:replace(UserName, "\\.", "_", [{return, list}]),
+                display_name = proplists:get_value(<<"screen_name">>, Props),
+                avatar = proplists:get_value(<<"profile_image_url">>, Props),
+                name = proplists:get_value(<<"name">>, Props),
+                email = Email,
+                surname = [],
+                twitter_id = Id,
+                register_date = erlang:now(),
+                status = ok }.
 
 email_prop(Props, twitter) -> binary_to_list(proplists:get_value(<<"screen_name">>, Props)) ++ "@twitter".
 

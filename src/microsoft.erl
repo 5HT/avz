@@ -25,14 +25,16 @@ registration_data(Props, microsoft, Ori)->
     Id = proplists:get_value(<<"id">>, Props),
     GivenName = proplists:get_value(<<"first_name">>, Props),
     FamilyName = proplists:get_value(<<"last_name">>, Props),
-    {Id, Ori#user{ display_name = proplists:get_value(<<"name">>, Props),
-                   email = email_prop(Props,microsoft),
-                   name = GivenName,
-                   surname = FamilyName,
-                   googleplus_id = Id,
-                   register_date = erlang:now(),
-                   sex = proplists:get_value(<<"gender">>, Props),
-                   status = ok }}.
+    Email = email_prop(Props,microsoft),
+    Ori#user{   id = Email,
+                display_name = proplists:get_value(<<"name">>, Props),
+                email = Email,
+                name = GivenName,
+                surname = FamilyName,
+                googleplus_id = Id,
+                register_date = erlang:now(),
+                sex = proplists:get_value(<<"gender">>, Props),
+                status = ok }.
 
 email_prop(Props, _) -> binary_to_list(proplists:get_value(<<"id">>, Props)) ++ "@microsoft".
 

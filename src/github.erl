@@ -50,15 +50,17 @@ callback() ->
 registration_data(Props, github, Ori) ->
     Id = proplists:get_value(<<"id">>, Props),
     Name = proplists:get_value(<<"name">>, Props),
-    {Id, Ori#user{  username = binary_to_list(proplists:get_value(<<"login">>, Props)),
-                    display_name = Name,
-                    avatar = proplists:get_value(<<"avatar_url">>, Props),
-                    email = email_prop(Props, github),
-                    name  = Name,
-                    surname = [],
-                    github_id = Id,
-                    register_date = erlang:now(),
-                    status = ok }}.
+    Email = email_prop(Props, github),
+    Ori#user{   id= Email,
+                username = binary_to_list(proplists:get_value(<<"login">>, Props)),
+                display_name = Name,
+                avatar = proplists:get_value(<<"avatar_url">>, Props),
+                email = Email,
+                name  = Name,
+                surname = [],
+                github_id = Id,
+                register_date = erlang:now(),
+                status = ok }.
 
 email_prop(Props, github) ->
     Mail = proplists:get_value(<<"email">>, Props),
