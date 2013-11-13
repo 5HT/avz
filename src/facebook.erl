@@ -36,8 +36,8 @@ registration_data(Props, facebook, Ori)->
 email_prop(Props, _) -> binary_to_list(proplists:get_value(<<"email">>, Props)).
 
 login_button() -> #panel{class=["btn-group"], body=
-    #link{id=loginfb, class=[btn, "btn-primary", "btn-large"], 
-        body=[#i{class=["icon-facebook", "icon-large"]}, <<"Facebook">>],
+    #link{id=loginfb, class=[btn, "btn-primary", "btn-large", "btn-lg"],
+        body=[#i{class=[fa,"fa-facebook","fa-lg","icon-facebook","icon-large"]}, <<"Facebook">>],
             actions= "$('#loginfb').on('click', fb_login);" }}.
 
 sdk() ->

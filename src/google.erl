@@ -32,8 +32,8 @@ registration_data(Props, google, Ori)->
 email_prop(Props, _) -> binary_to_list(proplists:get_value(<<"email">>, Props)).
 
 login_button()-> #panel{id=plusloginbtn, class=["btn-group"], body=
-    #link{class=[btn, "btn-google-plus", "btn-large"], 
-        body=[#i{class=["icon-google-plus", "icon-large"]}, <<"Google">>] }}.
+    #link{class=[btn, "btn-google-plus", "btn-large","btn-lg"],
+        body=[#i{class=[fa,"fa-google-plus","fa-lg","icon-google-plus", "icon-large"]}, <<"Google">>] }}.
 
 event(_) -> ok.
 callback() -> ok.

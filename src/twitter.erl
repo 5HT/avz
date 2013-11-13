@@ -39,8 +39,9 @@ callback() ->
          _ -> skip end.
 
 login_button() -> #panel{class=["btn-group"], body=
-    #link{id=twlogin, class=[btn, "btn-info", "btn-large"], 
-        body=[#i{class=["icon-twitter", "icon-large"]}, <<"Twitter">>], postback={twitter,logintwitter}}}.
+    #link{id=twlogin, class=[btn, "btn-info", "btn-large", "btn-lg"],
+        body=[#i{class=[fa,"fa-twitter","fa-lg","icon-twitter", "icon-large"]}, <<"Twitter">>],
+        postback={twitter,logintwitter}}}.
 
 sdk() -> [].
 api_event(_,_,_) -> ok.
