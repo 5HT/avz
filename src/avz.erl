@@ -23,14 +23,13 @@ api_event(winLogin, Args, Term)  -> microsoft:api_event(winLogin, Args, Term);
 api_event(Name, Args, Term)      -> error_logger:info_msg("Unknown API event: ~p ~p ~p",[Name, Args, Term]).
 
 login_user(User) -> wf:user(User), wf:redirect(?AFTER_LOGIN).
-login(Key, Args)->
-    case Args of
-        [{error, E}|_Rest] -> error_logger:info_msg("oauth error: ~p", [E]);
-        _ -> wf:info("AVZ MODULE: ~p",[?CTX#context.module]),
-            case kvs:get(user,Key:email_prop(Args,Key)) of
-                {ok,Existed} ->
-                    RegData = Key:registration_data(Args, Key, Existed),
-                    (?CTX#context.module):event({login, RegData});
-                {error,_} ->
-                    RegData = Key:registration_data(Args, Key, #user{}),
-                    (?CTX#context.module):event({register, RegData}) end end.
+login(Key, [{error, E}|_Rest])-> error_logger:info_msg("oauth error: ~p", [E]);
+login(Key, _) -> 
+    wf:info("AVZ MODULE: ~p",[?CTX#context.module]),
+    case kvs:get(user,Key:email_prop(Args,Key)) of
+        {ok,Existed} ->
+            RegData = Key:registration_data(Args, Key, Existed),
+            (?CTX#context.module):event({login, RegData});
+        {error,_} ->
+            RegData = Key:registration_data(Args, Key, #user{}),
+            (?CTX#context.module):event({register, RegData}) end end.
