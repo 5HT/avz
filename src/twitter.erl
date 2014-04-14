@@ -2,7 +2,7 @@
 -author('Andrii Zadorozhnii').
 -include_lib("n2o/include/wf.hrl").
 -include_lib("avz/include/avz.hrl").
--include_lib("kvs/include/users.hrl").
+-include_lib("kvs/include/user.hrl").
 -compile(export_all).
 -export(?API).
 -define(CONSUMER_KEY, case application:get_env(web, tw_consumer_key) of {ok, K} -> K;_-> "" end).
@@ -17,10 +17,10 @@ registration_data(Props, twitter, Ori)->
                 username = re:replace(UserName, "\\.", "_", [{return, list}]),
                 display_name = proplists:get_value(<<"screen_name">>, Props),
                 avatar = proplists:get_value(<<"profile_image_url">>, Props),
-                name = proplists:get_value(<<"name">>, Props),
+                names = proplists:get_value(<<"name">>, Props),
                 email = Email,
-                surname = [],
-                twitter_id = Id,
+                surnames = [],
+                tokens = [{twitter,Id}|Ori#user.tokens],
                 register_date = erlang:now(),
                 status = ok }.
 
@@ -99,59 +99,3 @@ show(Props)->
     _ -> error
   end.
 
-service_item()->
-  case nsm_db:get(user, wf:user()) of 
-    {error, notfound} -> wf:redirect("login");
-    {ok, #user{twitter_id=TwitterId}} ->
-      try service_btn(TwitterId) of
-        Btn ->  #li{id=twServiceBtn, class=png, body=Btn}
-      catch
-        _:_ -> []
-      end
-  end.
-
-service_btn(undefined) ->
-  case get_request_token() of
-    {RequestToken, _, _} ->
-      [#image{image="/images/img-52.png"}, #span{body= <<"Twitter">>},
-      #link{class="btn", body=["<span>+</span>", "Add"], url=authorize_url(RequestToken)}];
-    {error, R} -> error_logger:info_msg("Twitter request failed:", [R]), []
-  end;
-service_btn(TwitterId)->
-  case nsm_db:get(twitter_oauth, TwitterId) of
-    {error, notfound}->
-      service_btn(undefined);
-    {ok, #twitter_oauth{token=Token, secret=TokenSecret}} when Token == undefined orelse TokenSecret == undefined ->
-      service_btn(undefined);
-    {ok, #twitter_oauth{}} ->
-      [#image{image="/images/img-52.png"}, #span{body= <<"Twitter">>},
-      #link{class="btn", body=["<span>-</span>", "Del"], postback={delete, twitter}}]
-  end.
-
-delete()->
-  case nsm_db:get(user, wf:user()) of
-    {error, notfound} -> wf:redirect("login");
-    {ok, #user{twitter_id=TwitterId} = User} when TwitterId =/= undefined ->
-      case nsm_db:get(twitter_oauth, TwitterId) of
-        {error, notfound} -> ok;
-        {ok, #twitter_oauth{}} ->
-          nsm_db:put(User#user{twitter_id = undefined}),
-          %nsx_msg:notify(["system", "put"], User#user{twitter_id = undefined}),
-          nsm_sb:delete(twitter_oauth, TwitterId),
-          %nsx_msg:notify(["system", "delete"], {twitter_oauth, TwitterId}),
-          wf:update(twServiceBtn, service_btn(undefined))
-      end;
-    _ -> ok
-  end.
-
-tweet(UserName, Msg)->
-  case nsm_db:get(user, UserName) of
-    {error, notfound} -> fail;
-    {ok, #user{twitter_id=TwitterId}}->
-      case nsm_db:get(twitter_oauth, TwitterId) of
-        {error, notfound} -> fail;
-        {ok, #twitter_oauth{token = AccessToken, secret=AccessTokenSecret}}->
-          URL = "http://api.twitter.com/1.1/statuses/update.json",
-          oauth:post(URL, [{"status", Msg}], ?CONSUMER, AccessToken, AccessTokenSecret)
-    end
-  end.

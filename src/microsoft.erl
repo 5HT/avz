@@ -2,7 +2,7 @@
 -author('Maxim Sokhatsku').
 -include_lib("avz/include/avz.hrl").
 -include_lib("n2o/include/wf.hrl").
--include_lib("kvs/include/users.hrl").
+-include_lib("kvs/include/user.hrl").
 -compile(export_all).
 -export(?API).
 -define(CLIENT_ID, "000000004C0FEEB0").
@@ -29,9 +29,9 @@ registration_data(Props, microsoft, Ori)->
     Ori#user{   id = Email,
                 display_name = proplists:get_value(<<"name">>, Props),
                 email = Email,
-                name = GivenName,
-                surname = FamilyName,
-                googleplus_id = Id,
+                names = GivenName,
+                surnames = FamilyName,
+                tokens = [{microsoft,Id}|Ori#user.tokens],
                 register_date = erlang:now(),
                 sex = proplists:get_value(<<"gender">>, Props),
                 status = ok }.

@@ -2,7 +2,7 @@
 -author('Andrii Zadorozhnii').
 -include_lib("avz/include/avz.hrl").
 -include_lib("n2o/include/wf.hrl").
--include_lib("kvs/include/users.hrl").
+-include_lib("kvs/include/user.hrl").
 -compile(export_all).
 -export(?API).
 -define(GPLUS_CLIENT_ID, case application:get_env(web, gplus_client_id) of {ok, Id} -> Id; _-> "" end).
@@ -22,9 +22,9 @@ registration_data(Props, google, Ori)->
                 avatar = lists:nth(1,string:tokens(
                         binary_to_list(proplists:get_value(<<"url">>, Image#struct.lst)), "?")),
                 email = Email,
-                name = GivenName,
-                surname = FamilyName,
-                googleplus_id = Id,
+                names = GivenName,
+                surnames = FamilyName,
+                tokens = [{google,Id}|Ori#user.tokens],
                 register_date = erlang:now(),
                 sex = proplists:get_value(gender, Props),
                 status = ok }.

@@ -2,7 +2,7 @@
 -author('Andrii Zadorozhnii').
 -include_lib("avz/include/avz.hrl").
 -include_lib("n2o/include/wf.hrl").
--include_lib("kvs/include/users.hrl").
+-include_lib("kvs/include/user.hrl").
 -compile(export_all).
 -export(?API).
 
@@ -12,6 +12,7 @@ registration_data(Props, email, Ori)->
             display_name = Email,
             email = Email,
             register_date = now(),
+            tokens = [{email,Email}|Ori#user.tokens],
             status = ok,
             password = kvs:sha(proplists:get_value(<<"password">>,Props))}.
 

@@ -2,7 +2,7 @@
 -author('Andrii Zadorozhnii').
 -include_lib("avz/include/avz.hrl").
 -include_lib("n2o/include/wf.hrl").
--include_lib("kvs/include/users.hrl").
+-include_lib("kvs/include/user.hrl").
 -compile(export_all).
 -export(?API).
 -define(HTTP_ADDRESS, case application:get_env(web, http_address) of {ok, A} -> A; _ -> "" end).
@@ -26,10 +26,10 @@ registration_data(Props, facebook, Ori)->
                 display_name = UserName,
                 avatar = "https://graph.facebook.com/" ++ UserName ++ "/picture",
                 email = Email,
-                name = proplists:get_value(<<"first_name">>, Props),
-                surname = proplists:get_value(<<"last_name">>, Props),
-                facebook_id = Id,
-                age = {element(3, BirthDay), element(1, BirthDay), element(2, BirthDay)},
+                names = proplists:get_value(<<"first_name">>, Props),
+                surnames = proplists:get_value(<<"last_name">>, Props),
+                tokens = [{facebook,Id}|Ori#user.tokens],
+                birth = {element(3, BirthDay), element(1, BirthDay), element(2, BirthDay)},
                 register_date = erlang:now(),
                 status = ok }.
 

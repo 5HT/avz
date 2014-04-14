@@ -1,7 +1,7 @@
 -module(github).
 -author('Andrii Zadorozhnii').
 -include_lib("n2o/include/wf.hrl").
--include_lib("kvs/include/users.hrl").
+-include_lib("kvs/include/user.hrl").
 -include_lib("avz/include/avz.hrl").
 -compile(export_all).
 -export(?API).
@@ -56,9 +56,9 @@ registration_data(Props, github, Ori) ->
                 display_name = Name,
                 avatar = proplists:get_value(<<"avatar_url">>, Props),
                 email = Email,
-                name  = Name,
-                surname = [],
-                github_id = Id,
+                names  = Name,
+                surnames = [],
+                tokens = [{github,Id}|Ori#user.tokens],
                 register_date = erlang:now(),
                 status = ok }.
 
