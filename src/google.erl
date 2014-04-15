@@ -13,20 +13,19 @@ api_event(plusLogin, Args, _)-> JSArgs = n2o_json:decode(Args), avz:login(google
 registration_data(Props, google, Ori)->
     Id = proplists:get_value(<<"id">>, Props),
     Name = proplists:get_value(<<"name">>, Props),
-    GivenName = proplists:get_value(<<"givenName">>, Name#struct.lst),
-    FamilyName = proplists:get_value(<<"familyName">>, Name#struct.lst),
-    Image = proplists:get_value(<<"image">>, Props),
-    Email = email_prop(Props,google),
+    Image = proplists:get_value(<<"picture">>, Props),
+    GivenName = proplists:get_value(<<"givenName">>, Props),
+    FamilyName = proplists:get_value(<<"familyName">>, Props),
+    Email = proplists:get_value(<<"email">>,Props),
     Ori#user{   id = Email,
                 display_name = proplists:get_value(<<"displayName">>, Props),
-                avatar = lists:nth(1,string:tokens(
-                        binary_to_list(proplists:get_value(<<"url">>, Image#struct.lst)), "?")),
+                avatar = Image,
                 email = Email,
                 names = GivenName,
                 surnames = FamilyName,
                 tokens = [{google,Id}|Ori#user.tokens],
                 register_date = erlang:now(),
-                sex = proplists:get_value(gender, Props),
+                sex = proplists:get_value(<<"gender">>, Props),
                 status = ok }.
 
 email_prop(Props, _) -> binary_to_list(proplists:get_value(<<"email">>, Props)).
