@@ -32,4 +32,5 @@ login(Key, Args) ->
             (?CTX#context.module):event({login, RegData});
         {error,_} ->
             RegData = Key:registration_data(Args, Key, #user{}),
-            (?CTX#context.module):event({register, RegData}) end.
+            (?CTX#context.module):event({register, RegData});
+        U -> wf:info("avz:login unknown: ~p",[U]) end.
