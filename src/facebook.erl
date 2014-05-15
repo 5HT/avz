@@ -9,7 +9,7 @@
 -define(FB_APP_ID, case application:get_env(web, fb_id) of {ok, Id} -> Id; _-> "" end).
 
 callback() -> ok.
-event({facebook,_}) -> ok.
+event({facebook,Event}) -> wf:wire("fb_login();"), ok.
 api_event(fbLogin, Args, _Term)-> JSArgs = n2o_json:decode(Args), avz:login(facebook, JSArgs#struct.lst).
 
 registration_data(Props, facebook, Ori)->
@@ -38,7 +38,9 @@ email_prop(Props, _) -> binary_to_list(proplists:get_value(<<"email">>, Props)).
 login_button() -> #panel{class=["btn-group"], body=
     #link{id=loginfb, class=[btn, "btn-primary", "btn-large", "btn-lg"],
         body=[#i{class=[fa,"fa-facebook","fa-lg","icon-facebook","icon-large"]}, <<"Facebook">>],
-            actions= "$('#loginfb').on('click', fb_login);" }}.
+           postback={facebook,loginClick}
+%    actions = "$('#loginfb').on('click', fb_login);"
+             }}.
 
 sdk() ->
     wf:wire(#api{name=setFbIframe, tag=fb}),
