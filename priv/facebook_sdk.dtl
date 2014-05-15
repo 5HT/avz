@@ -3,12 +3,12 @@ window.fbAsyncInit = function() {
   FB.init({ appId: '{{appid}}', channelUrl: ' {{channelUrl}}', status: true, cookie: true, xfbml: true, oauth: true });
 
   FB.getLoginStatus(function(response) {
-    if(setFbIframe){
+//    if(setFbIframe){
       var inIframe= top!=self;
-      setFbIframe(inIframe);
+  //    setFbIframe(inIframe);
       if(inIframe && response.status == 'connected' && fbLogin)
         FB.api("/me?fields=id,username,first_name,last_name,email,birthday", function(response){ fbLogin(response);});
-    }
+  //  }
   });
 };
 
