@@ -36,7 +36,7 @@ registration_data(Props, microsoft, Ori)->
                 sex = proplists:get_value(<<"gender">>, Props),
                 status = ok }.
 
-email_prop(Props, _) -> binary_to_list(proplists:get_value(<<"id">>, Props)) ++ "@microsoft".
+email_prop(Props, _) -> proplists:get_value(<<"id">>, Props).
 
 login_button()-> #panel{class=["btn-group"], body=
     #link{id=microsoftbtn, class=[btn, "btn-microsoft", "btn-large"], 

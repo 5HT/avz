@@ -24,7 +24,7 @@ registration_data(Props, twitter, Ori)->
                 register_date = erlang:now(),
                 status = ok }.
 
-email_prop(Props, twitter) -> binary_to_list(proplists:get_value(<<"screen_name">>, Props)) ++ "@twitter".
+email_prop(Props, twitter) -> proplists:get_value(<<"screen_name">>, Props).
 
 callback() ->
     Token = wf:q(<<"oauth_token">>),

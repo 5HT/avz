@@ -12,8 +12,8 @@ buttons(Methods) -> [ M:login_button() || M <- Methods].
 event(init) -> [];
 event(logout) -> wf:user(undefined), wf:redirect(?LOGIN_PAGE);
 event(to_login) -> wf:redirect(?LOGIN_PAGE);
-event({register, #user{}=U}) -> kvs:add(U), login_user(U);
-event({login, #user{}=U}) -> login_user(U);
+event({register, #user{}=U}) -> kvs:add(U), login_user(U); % sample
+event({login, #user{}=U}) -> login_user(U);                % sample
 event({Method,Event}) -> Method:event({Method,Event});
 event(Ev) ->  error_logger:info_msg("Page Event ~p",[Ev]).
 

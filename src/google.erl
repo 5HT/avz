@@ -28,7 +28,7 @@ registration_data(Props, google, Ori)->
                 sex = proplists:get_value(<<"gender">>, Props),
                 status = ok }.
 
-email_prop(Props, _) -> binary_to_list(proplists:get_value(<<"email">>, Props)).
+email_prop(Props, _) -> proplists:get_value(<<"email">>, Props).
 
 login_button()-> #panel{id=plusloginbtn, class=["btn-group"], body=
     #link{class=[btn, "btn-google-plus", "btn-large","btn-lg"],

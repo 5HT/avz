@@ -33,7 +33,7 @@ registration_data(Props, facebook, Ori)->
                 register_date = erlang:now(),
                 status = ok }.
 
-email_prop(Props, _) -> binary_to_list(proplists:get_value(<<"email">>, Props)).
+email_prop(Props, _) -> proplists:get_value(<<"email">>, Props).
 
 login_button() -> #panel{class=["btn-group"], body=
     #link{id=loginfb, class=[btn, "btn-primary", "btn-large", "btn-lg"],
