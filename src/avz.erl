@@ -25,12 +25,12 @@ api_event(Name, Args, Term)      -> error_logger:info_msg("Unknown API event: ~p
 login_user(User) -> wf:user(User), wf:redirect(?AFTER_LOGIN).
 login(Key, [{error, E}|_Rest])-> error_logger:info_msg("oauth error: ~p", [E]);
 login(Key, Args) ->
-    wf:info("AVZ MODULE: ~p",[?CTX#context.module]),
+    wf:info("AVZ MODULE: ~p",[?CTX#cx.module]),
     case kvs:get(user,Key:email_prop(Args,Key)) of
         {ok,Existed} ->
             RegData = Key:registration_data(Args, Key, Existed),
-            (?CTX#context.module):event({login, RegData});
+            (?CTX#cx.module):event({login, RegData});
         {error,_} ->
             RegData = Key:registration_data(Args, Key, #user{}),
-            (?CTX#context.module):event({register, RegData});
+            (?CTX#cx.module):event({register, RegData});
         U -> wf:info("avz:login unknown: ~p",[U]) end.
