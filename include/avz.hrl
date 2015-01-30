@@ -1,6 +1,6 @@
 -record(struct, {lst=[]}).
 -define(AFTER_LOGIN, wf:config(avz,after_login_page,"/account")).
--define(LOGIN_PAGE, "/login").
+-define(LOGIN_PAGE, wf:config(avz,login_page,"/login")).
 -define(METHODS, [facebook,google,github,twitter,microsoft]).
 -define(API,[sdk/0,               % JavaScript for page embedding for JavaScript based login methods
              login_button/0,      % HTML Button for page embedding
