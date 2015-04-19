@@ -7,6 +7,7 @@
 -export(?API).
 -define(HTTP_ADDRESS, case application:get_env(web, http_address) of {ok, A} -> A; _ -> "" end).
 -define(FB_APP_ID, case application:get_env(web, fb_id) of {ok, Id} -> Id; _-> "" end).
+-define(FB_BTN_CLASS, case application:get_env(web, fb_btn_class) of {ok, C} -> C; _ -> "btn-primary btn-large btn-lg" end).
 
 callback() -> ok.
 event({facebook,Event}) -> wf:wire("fb_login();"), ok.
@@ -36,7 +37,7 @@ registration_data(Props, facebook, Ori)->
 email_prop(Props, _) -> proplists:get_value(<<"email">>, Props).
 
 login_button() -> #panel{class=["btn-group"], body=
-    #link{id=loginfb, class=[btn, "btn-primary", "btn-large", "btn-lg"],
+    #link{id=loginfb, class=[btn, ?FB_BTN_CLASS],
         body=[#i{class=[fa,"fa-facebook","fa-lg","icon-facebook","icon-large"]}, <<"Facebook">>],
            postback={facebook,loginClick}
 %    actions = "$('#loginfb').on('click', fb_login);"
