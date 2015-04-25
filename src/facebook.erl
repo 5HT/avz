@@ -32,8 +32,7 @@ registration_data(Props, facebook, Ori)->
                 tokens = [{facebook,Id}|Ori#user.tokens],
                 birth = {element(3, BirthDay), element(1, BirthDay), element(2, BirthDay)},
                 register_date = erlang:now(),
-                status = ok,
-                cover = proplists:get_value(<<"source">>, (proplists:get_value(<<"cover">>, Props))#struct.lst) }.
+                status = ok }.
 
 email_prop(Props, _) -> proplists:get_value(<<"email">>, Props).
 
