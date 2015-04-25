@@ -15,7 +15,6 @@ api_event(fbLogin, Args, _Term)-> JSArgs = n2o_json:decode(Args), avz:login(face
 
 registration_data(Props, facebook, Ori)->
     Id = proplists:get_value(<<"id">>, Props),
-    UserName = binary_to_list(proplists:get_value(<<"username">>, Props)),
     BirthDay = case proplists:get_value(<<"birthday">>, Props) of
         undefined -> {1, 1, 1970};
         BD -> list_to_tuple([list_to_integer(X) || X <- string:tokens(binary_to_list(BD), "/")]) end,
@@ -23,9 +22,10 @@ registration_data(Props, facebook, Ori)->
     error_logger:info_msg("Props: ~p",[Props]),
     Id = proplists:get_value(<<"id">>, Props),
     Email = email_prop(Props, facebook),
+    [UserName|_] = string:tokens(binary_to_list(Email),"@"), Cover = case proplists:get_value(<<"cover">>,Props) of undefined -> ""; P -> case proplists:get_value(<<"source">>,P#struct.lst) of undefined -> ""; C -> binary_to_list(C) end end,
     Ori#user{   id = Email,
                 display_name = UserName,
-                avatar = "https://graph.facebook.com/" ++ UserName ++ "/picture",
+                images = [{fb_avatar,"https://graph.facebook.com/" ++ binary_to_list(Id) ++ "/picture"},{fb_cover,Cover}|Ori#user.images],
                 email = Email,
                 names = proplists:get_value(<<"first_name">>, Props),
                 surnames = proplists:get_value(<<"last_name">>, Props),
