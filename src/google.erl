@@ -19,7 +19,7 @@ registration_data(Props, google, Ori)->
     Email = proplists:get_value(<<"email">>,Props),
     Ori#user{   id = Email,
                 display_name = proplists:get_value(<<"displayName">>, Props),
-                avatar = Image,
+                images = [{google_avatar,Image}|Ori#user.images],
                 email = Email,
                 names = GivenName,
                 surnames = FamilyName,

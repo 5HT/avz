@@ -54,7 +54,7 @@ registration_data(Props, github, Ori) ->
     Ori#user{   id= Email,
                 username = binary_to_list(proplists:get_value(<<"login">>, Props)),
                 display_name = Name,
-                avatar = proplists:get_value(<<"avatar_url">>, Props),
+                images = [{gh_avatar,proplists:get_value(<<"avatar_url">>, Props)}|Ori#user.images],
                 email = Email,
                 names  = Name,
                 surnames = [],
