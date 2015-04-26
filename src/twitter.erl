@@ -16,7 +16,7 @@ registration_data(Props, twitter, Ori)->
     Ori#user{   id = Email,
                 username = re:replace(UserName, "\\.", "_", [{return, list}]),
                 display_name = proplists:get_value(<<"screen_name">>, Props),
-                avatar = proplists:get_value(<<"profile_image_url">>, Props),
+                images = [{tw_avatar,proplists:get_value(<<"profile_image_url">>, Props)}|Ori#user.images],
                 names = proplists:get_value(<<"name">>, Props),
                 email = Email,
                 surnames = [],
