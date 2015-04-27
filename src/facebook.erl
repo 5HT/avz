@@ -24,7 +24,7 @@ registration_data(Props, facebook, Ori)->
     [UserName|_] = string:tokens(binary_to_list(Email),"@"), Cover = case proplists:get_value(<<"cover">>,Props) of undefined -> ""; P -> case proplists:get_value(<<"source">>,P#struct.lst) of undefined -> ""; C -> binary_to_list(C) end end,
     Ori#user{   id = Email,
                 display_name = UserName,
-                images = [{fb_avatar,"https://graph.facebook.com/" ++ binary_to_list(Id) ++ "/picture"},{fb_cover,Cover}|Ori#user.images],
+                images = [{fb_avatar,"https://graph.facebook.com/" ++ binary_to_list(Id) ++ "/picture?type=large"},{fb_cover,Cover}|Ori#user.images],
                 email = Email,
                 names = proplists:get_value(<<"first_name">>, Props),
                 surnames = proplists:get_value(<<"last_name">>, Props),
