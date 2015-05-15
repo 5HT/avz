@@ -29,7 +29,7 @@ login(Key, Args) ->
     case kvs:get(user,Key:email_prop(Args,Key)) of
         {ok,Existed} ->
             RegData = Key:registration_data(Args, Key, Existed),
-            (?CTX#cx.module):event({login, RegData});
+            (?CTX#cx.module):event({login, Existed});
         {error,_} ->
             RegData = Key:registration_data(Args, Key, #user{}),
             (?CTX#cx.module):event({register, RegData});
