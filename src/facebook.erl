@@ -1,10 +1,13 @@
 -module(facebook).
 -author('Andrii Zadorozhnii').
+
 -include_lib("avz/include/avz.hrl").
 -include_lib("n2o/include/wf.hrl").
 -include_lib("kvs/include/user.hrl").
+
 -compile(export_all).
 -export(?API).
+
 -define(HTTP_ADDRESS, case application:get_env(web, http_address) of {ok, A} -> A; _ -> "" end).
 -define(FB_APP_ID, case application:get_env(web, fb_id) of {ok, Id} -> Id; _-> "" end).
 -define(FB_BTN_CLASS, case application:get_env(web, fb_btn_class) of {ok, C} -> C; _ -> "btn-primary btn-large btn-lg" end).
@@ -35,15 +38,15 @@ registration_data(Props, facebook, Ori)->
                 register_date = erlang:now(),
                 status = ok }.
 
-email_prop(Props, _) -> proplists:get_value(<<"email">>, Props).
+email_prop(Props, _) ->
+    proplists:get_value(<<"email">>, Props).
 
-login_button() -> #panel{class=["btn-group"], body=
-    #link{id=loginfb, class=[btn, ?FB_BTN_CLASS],
-        body=?FB_BTN_BODY, postback={facebook,loginClick} }}.
+login_button() ->
+    #panel{class=["btn-group"], body=#link{id=loginfb, class=[btn, ?FB_BTN_CLASS],body=?FB_BTN_BODY, postback={facebook,loginClick} }}.
 
 sdk() ->
     wf:wire(#api{name=setFbIframe, tag=fb}),
     wf:wire(#api{name=fbAutoLogin, tag=fb}),
     wf:wire(#api{name=fbLogin, tag=fb}),
-  [ #dtl{bind_script=false, file="facebook_sdk", ext="dtl", folder="priv/static/js",
+    [ #dtl{bind_script=false, file="facebook_sdk", ext="dtl", folder="priv/static/js",
         bindings=[{appid, ?FB_APP_ID},{channelUrl, ?HTTP_ADDRESS ++ "/static/channel.html"} ] } ].
