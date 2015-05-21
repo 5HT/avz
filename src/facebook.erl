@@ -11,7 +11,7 @@
 -define(FB_BTN_BODY, case application:get_env(wen,fb_btn_body) of {ok, _FBBTNBODY} -> _FBBTNBODY; _ -> [#i{class=[fa,"fa-facebook","fa-lg","icon-facebook","icon-large"]}, <<"Facebook">>] end).
 
 callback() -> ok.
-event({facebook,Event}) -> wf:wire("fb_login();"), ok.
+event({facebook,_Event}) -> wf:wire("fb_login();"), ok.
 api_event(fbLogin, Args, _Term)-> JSArgs = n2o_json:decode(Args), avz:login(facebook, JSArgs#struct.lst).
 
 registration_data(Props, facebook, Ori)->
