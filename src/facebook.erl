@@ -8,6 +8,7 @@
 -define(HTTP_ADDRESS, case application:get_env(web, http_address) of {ok, A} -> A; _ -> "" end).
 -define(FB_APP_ID, case application:get_env(web, fb_id) of {ok, Id} -> Id; _-> "" end).
 -define(FB_BTN_CLASS, case application:get_env(web, fb_btn_class) of {ok, C} -> C; _ -> "btn-primary btn-large btn-lg" end).
+-define(FB_BTN_BODY, case application:get_env(wen,fb_btn_body) of {ok, _FBBTNBODY} -> _FBBTNBODY; _ -> [#i{class=[fa,"fa-facebook","fa-lg","icon-facebook","icon-large"]}, <<"Facebook">>] end).
 
 callback() -> ok.
 event({facebook,Event}) -> wf:wire("fb_login();"), ok.
@@ -22,9 +23,10 @@ registration_data(Props, facebook, Ori)->
     error_logger:info_msg("Props: ~p",[Props]),
     Email = email_prop(Props, facebook),
     [UserName|_] = string:tokens(binary_to_list(Email),"@"), Cover = case proplists:get_value(<<"cover">>,Props) of undefined -> ""; P -> case proplists:get_value(<<"source">>,P#struct.lst) of undefined -> ""; C -> binary_to_list(C) end end,
+    OldImages = case Ori#user.images of undefined -> []; OldI -> OldI end,
     Ori#user{   id = Email,
                 display_name = UserName,
-                images = [{fb_avatar,"https://graph.facebook.com/" ++ binary_to_list(Id) ++ "/picture?type=large"},{fb_cover,Cover}|Ori#user.images],
+                images = [{fb_avatar,"https://graph.facebook.com/" ++ binary_to_list(Id) ++ "/picture?type=large"},{fb_cover,Cover}|OldImages],
                 email = Email,
                 names = proplists:get_value(<<"first_name">>, Props),
                 surnames = proplists:get_value(<<"last_name">>, Props),
@@ -37,10 +39,7 @@ email_prop(Props, _) -> proplists:get_value(<<"email">>, Props).
 
 login_button() -> #panel{class=["btn-group"], body=
     #link{id=loginfb, class=[btn, ?FB_BTN_CLASS],
-        body=[#i{class=[fa,"fa-facebook","fa-lg","icon-facebook","icon-large"]}, <<"Facebook">>],
-           postback={facebook,loginClick}
-%    actions = "$('#loginfb').on('click', fb_login);"
-             }}.
+        body=?FB_BTN_BODY, postback={facebook,loginClick} }}.
 
 sdk() ->
     wf:wire(#api{name=setFbIframe, tag=fb}),
