@@ -13,7 +13,10 @@ event(init) -> [];
 event(logout) -> wf:user(undefined), wf:redirect(?LOGIN_PAGE);
 event(to_login) -> wf:redirect(?LOGIN_PAGE);
 event({register, #user{}=U}) -> kvs:add(U), login_user(U); % sample
-event({login, #user{}=U}) -> login_user(U);                % sample
+event({login, #user{}=U, N}) ->
+    Updated = userhelper:updateUser(U,N),
+    kvs:put(Updated),
+    login_user(Updated);                % sample
 event({Method,Event}) -> Method:event({Method,Event});
 event(Ev) ->  error_logger:info_msg("Page Event ~p",[Ev]).
 
@@ -29,7 +32,7 @@ login(Key, Args) ->
     case kvs:get(user,Key:email_prop(Args,Key)) of
         {ok,Existed} ->
             RegData = Key:registration_data(Args, Key, Existed),
-            (?CTX#cx.module):event({login, Existed});
+            (?CTX#cx.module):event({login, Existed, RegData});
         {error,_} ->
             RegData = Key:registration_data(Args, Key, #user{}),
             (?CTX#cx.module):event({register, RegData});
