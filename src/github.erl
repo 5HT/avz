@@ -54,11 +54,11 @@ registration_data(Props, github, Ori) ->
     Ori#user{   id= Email,
                 username = binary_to_list(proplists:get_value(<<"login">>, Props)),
                 display_name = Name,
-                images = [{gh_avatar,proplists:get_value(<<"avatar_url">>, Props)}|Ori#user.images],
+                images = userhelper:updateProplist({gh_avatar,proplists:get_value(<<"avatar_url">>, Props)},Ori#user.images),
                 email = Email,
                 names  = Name,
                 surnames = [],
-                tokens = [{github,Id}|Ori#user.tokens],
+                tokens = userhelper:updateProplist({github,Id},Ori#user.tokens),
                 register_date = erlang:now(),
                 status = ok }.
 
