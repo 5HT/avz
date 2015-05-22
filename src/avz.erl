@@ -26,7 +26,7 @@ api_event(winLogin, Args, Term)  -> microsoft:api_event(winLogin, Args, Term);
 api_event(Name, Args, Term)      -> error_logger:info_msg("Unknown API event: ~p ~p ~p",[Name, Args, Term]).
 
 login_user(User) -> wf:user(User), wf:redirect(?AFTER_LOGIN).
-login(Key, [{error, E}|_Rest])-> error_logger:info_msg("oauth error: ~p", [E]);
+login(_Key, [{error, E}|_Rest])-> error_logger:info_msg("oauth error: ~p", [E]);
 login(Key, Args) ->
     wf:info("AVZ MODULE: ~p",[?CTX#cx.module]),
     case kvs:get(user,Key:email_prop(Args,Key)) of
