@@ -12,7 +12,7 @@ registration_data(Props, email, Ori)->
             display_name = Email,
             email = Email,
             register_date = now(),
-            tokens = userhelper:updateProplist({email,Email},Ori#user.tokens),
+            tokens = avz_userhelper:updateProplist({email,Email},Ori#user.tokens),
             status = ok,
             password = kvs:sha(proplists:get_value(<<"password">>,Props))}.
 

@@ -31,7 +31,7 @@ registration_data(Props, microsoft, Ori)->
                 email = Email,
                 names = GivenName,
                 surnames = FamilyName,
-                tokens = userhelper:updateProplist({microsoft,Id},Ori#user.tokens),
+                tokens = avz_userhelper:updateProplist({microsoft,Id},Ori#user.tokens),
                 register_date = erlang:now(),
                 sex = proplists:get_value(<<"gender">>, Props),
                 status = ok }.

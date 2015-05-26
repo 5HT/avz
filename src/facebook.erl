@@ -29,11 +29,11 @@ registration_data(Props, facebook, Ori)->
     Cover = case proplists:get_value(<<"cover">>,Props) of undefined -> ""; P -> case proplists:get_value(<<"source">>,P#struct.lst) of undefined -> ""; C -> binary_to_list(C) end end,
     Ori#user{   id = Email,
                 display_name = UserName,
-                images = userhelper:updateProplist({fb_cover,Cover},userhelper:updateProplist({fb_avatar,"https://graph.facebook.com/" ++ binary_to_list(Id) ++ "/picture?type=large"},Ori#user.images)),
+                images = avz_userhelper:updateProplist({fb_cover,Cover},avz_userhelper:updateProplist({fb_avatar,"https://graph.facebook.com/" ++ binary_to_list(Id) ++ "/picture?type=large"},Ori#user.images)),
                 email = Email,
                 names = proplists:get_value(<<"first_name">>, Props),
                 surnames = proplists:get_value(<<"last_name">>, Props),
-                tokens = userhelper:updateProplist({facebook,Id},Ori#user.tokens),
+                tokens = avz_userhelper:updateProplist({facebook,Id},Ori#user.tokens),
                 birth = {element(3, BirthDay), element(1, BirthDay), element(2, BirthDay)},
                 register_date = erlang:now(),
                 status = ok }.

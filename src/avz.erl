@@ -14,7 +14,7 @@ event(logout) -> wf:user(undefined), wf:redirect(?LOGIN_PAGE);
 event(to_login) -> wf:redirect(?LOGIN_PAGE);
 event({register, #user{}=U}) -> kvs:add(U), login_user(U); % sample
 event({login, #user{}=U, N}) ->
-    Updated = userhelper:updateUser(U,N),
+    Updated = avz_userhelper:updateUser(U,N),
     kvs:put(Updated),
     login_user(Updated);                % sample
 event({Method,Event}) -> Method:event({Method,Event});

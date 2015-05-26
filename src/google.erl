@@ -19,11 +19,11 @@ registration_data(Props, google, Ori)->
     Email = email_prop(Props,google),
     Ori#user{   id = Email,
                 display_name = proplists:get_value(<<"displayName">>, Props),
-                images = userhelper:updateProplist({google_avatar,Image},Ori#user.images),
+                images = avz_userhelper:updateProplist({google_avatar,Image},Ori#user.images),
                 email = Email,
                 names = GivenName,
                 surnames = FamilyName,
-                tokens = userhelper:updateProplist({google,Id},Ori#user.tokens),
+                tokens = avz_userhelper:updateProplist({google,Id},Ori#user.tokens),
                 register_date = erlang:now(),
                 sex = proplists:get_value(<<"gender">>, Props),
                 status = ok }.

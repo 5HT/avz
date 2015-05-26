@@ -1,4 +1,4 @@
--module(userhelper).
+-module(avz_userhelper).
 -export([updateProplist/2,updateUser/2]).
 
 -include_lib("kvs/include/user.hrl").

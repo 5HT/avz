@@ -16,11 +16,11 @@ registration_data(Props, twitter, Ori)->
     Ori#user{   id = Email,
                 username = re:replace(UserName, "\\.", "_", [{return, list}]),
                 display_name = proplists:get_value(<<"screen_name">>, Props),
-                images = userhelper:updateProplist({tw_avatar,proplists:get_value(<<"profile_image_url">>, Props)},Ori#user.images),
+                images = avz_userhelper:updateProplist({tw_avatar,proplists:get_value(<<"profile_image_url">>, Props)},Ori#user.images),
                 names = proplists:get_value(<<"name">>, Props),
                 email = Email,
                 surnames = [],
-                tokens = userhelper:updateProplist({twitter,Id},Ori#user.tokens),
+                tokens = avz_userhelper:updateProplist({twitter,Id},Ori#user.tokens),
                 register_date = erlang:now(),
                 status = ok }.
 
