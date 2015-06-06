@@ -13,7 +13,10 @@ event(init) -> [];
 event(logout) -> wf:user(undefined), wf:redirect(?LOGIN_PAGE);
 event(to_login) -> wf:redirect(?LOGIN_PAGE);
 event({register, #user{}=U}) -> kvs:add(U), login_user(U); % sample
-event({login, #user{}=U}) -> login_user(U);                % sample
+event({login, #user{}=U, N}) ->
+    Updated = avz_userhelper:updateUser(U,N),
+    kvs:put(Updated),
+    login_user(Updated);                % sample
 event({Method,Event}) -> Method:event({Method,Event});
 event(Ev) ->  error_logger:info_msg("Page Event ~p",[Ev]).
 
@@ -23,13 +26,13 @@ api_event(winLogin, Args, Term)  -> microsoft:api_event(winLogin, Args, Term);
 api_event(Name, Args, Term)      -> error_logger:info_msg("Unknown API event: ~p ~p ~p",[Name, Args, Term]).
 
 login_user(User) -> wf:user(User), wf:redirect(?AFTER_LOGIN).
-login(Key, [{error, E}|_Rest])-> error_logger:info_msg("oauth error: ~p", [E]);
+login(_Key, [{error, E}|_Rest])-> error_logger:info_msg("oauth error: ~p", [E]);
 login(Key, Args) ->
     wf:info("AVZ MODULE: ~p",[?CTX#cx.module]),
     case kvs:get(user,Key:email_prop(Args,Key)) of
         {ok,Existed} ->
             RegData = Key:registration_data(Args, Key, Existed),
-            (?CTX#cx.module):event({login, RegData});
+            (?CTX#cx.module):event({login, Existed, RegData});
         {error,_} ->
             RegData = Key:registration_data(Args, Key, #user{}),
             (?CTX#cx.module):event({register, RegData});
