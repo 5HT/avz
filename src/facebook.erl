@@ -42,7 +42,7 @@ email_prop(Props, _) ->
     proplists:get_value(<<"email">>, Props).
 
 login_button() ->
-    #panel{class=["btn-group"], body=#link{id=loginfb, class=[btn, ?FB_BTN_CLASS],body=?FB_BTN_BODY, postback={facebook,loginClick} }}.
+    #panel{class=["btn-group"], body=#link{id=loginfb, class=[?FB_BTN_CLASS],body=?FB_BTN_BODY, postback={facebook,loginClick} }}.
 
 sdk() ->
     wf:wire(#api{name=setFbIframe, tag=fb}),
