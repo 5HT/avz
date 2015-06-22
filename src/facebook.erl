@@ -11,7 +11,7 @@
 -define(HTTP_ADDRESS, case application:get_env(web, http_address) of {ok, A} -> A; _ -> "" end).
 -define(FB_APP_ID, case application:get_env(web, fb_id) of {ok, Id} -> Id; _-> "" end).
 -define(FB_BTN_CLASS, case application:get_env(web, fb_btn_class) of {ok, C} -> C; _ -> "btn-primary btn-large btn-lg" end).
--define(FB_BTN_BODY, case application:get_env(wen,fb_btn_body) of {ok, _FBBTNBODY} -> _FBBTNBODY; _ -> [#i{class=[fa,"fa-facebook","fa-lg","icon-facebook","icon-large"]}, <<"Facebook">>] end).
+-define(FB_BTN_BODY, case application:get_env(web,fb_btn_body) of {ok, _FBBTNBODY} -> _FBBTNBODY; _ -> [#i{class=[fa,"fa-facebook","fa-lg","icon-facebook","icon-large"]}, <<"Facebook">>] end).
 
 callback() -> ok.
 event({facebook,_Event}) -> wf:wire("fb_login();"), ok.
@@ -42,7 +42,7 @@ email_prop(Props, _) ->
     proplists:get_value(<<"email">>, Props).
 
 login_button() ->
-    #panel{class=["btn-group"], body=#link{id=loginfb, class=[btn, ?FB_BTN_CLASS],body=?FB_BTN_BODY, postback={facebook,loginClick} }}.
+    #panel{class=["btn-group"], body=#link{id=loginfb, class=[?FB_BTN_CLASS],body=?FB_BTN_BODY, postback={facebook,loginClick} }}.
 
 sdk() ->
     wf:wire(#api{name=setFbIframe, tag=fb}),
