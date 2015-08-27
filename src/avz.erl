@@ -28,6 +28,7 @@ api_event(Name, Args, Term)      -> error_logger:info_msg("Unknown API event: ~p
 login_user(User) -> wf:user(User), wf:redirect(?AFTER_LOGIN).
 login(_Key, [{error, E}|_Rest])-> error_logger:info_msg("oauth error: ~p", [E]);
 login(Key, Args) ->
+    n2o_session:ensure_sid([],?CTX,[]),
     wf:info("AVZ MODULE: ~p",[?CTX#cx.module]),
     case kvs:get(user,Key:email_prop(Args,Key)) of
         {ok,Existed} ->
