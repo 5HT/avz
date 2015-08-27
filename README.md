@@ -23,7 +23,7 @@ API
     api_event/3          % Page Event for JavaScript based login methods
     callback/0           % Callback part of HTTP redirect based login methods
     registration_data/3  % Process Parameters
-    
+
 Usage
 -----
 
@@ -34,6 +34,7 @@ Credits
 -------
 
 * Andrii Zadorozhnii
+* Andrii Sergiienko
 * Maxim Sokhatsky
 
 OM A HUM

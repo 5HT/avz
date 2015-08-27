@@ -5,9 +5,9 @@
 -include_lib("kvs/include/user.hrl").
 -compile(export_all).
 -export(?API).
--define(CONSUMER_KEY, case application:get_env(web, tw_consumer_key) of {ok, K} -> K;_-> "" end).
--define(CONSUMER_SECRET, case application:get_env(web, tw_consumer_secret) of {ok, S} -> S; _-> "" end).
--define(CONSUMER, {?CONSUMER_KEY, ?CONSUMER_SECRET, hmac_sha1}).
+-define(CONSUMER_KEY,    application:get_env(web, tw_consumer_key,    [])).
+-define(CONSUMER_SECRET, application:get_env(web, tw_consumer_secret, [])).
+-define(CONSUMER,        {?CONSUMER_KEY, ?CONSUMER_SECRET, hmac_sha1}).
 
 registration_data(Props, twitter, Ori)->
     Id = proplists:get_value(<<"id_str">>, Props),
@@ -16,19 +16,19 @@ registration_data(Props, twitter, Ori)->
     Ori#user{   id = Email,
                 username = re:replace(UserName, "\\.", "_", [{return, list}]),
                 display_name = proplists:get_value(<<"screen_name">>, Props),
-                images = avz_userhelper:updateProplist({tw_avatar,proplists:get_value(<<"profile_image_url">>, Props)},Ori#user.images),
+                images = avz:update({tw_avatar,proplists:get_value(<<"profile_image_url">>, Props)},Ori#user.images),
                 names = proplists:get_value(<<"name">>, Props),
                 email = Email,
                 surnames = [],
-                tokens = avz_userhelper:updateProplist({twitter,Id},Ori#user.tokens),
-                register_date = erlang:now(),
+                tokens = avz:update({twitter,Id},Ori#user.tokens),
+                register_date = os:timestamp(),
                 status = ok }.
 
 email_prop(Props, twitter) -> proplists:get_value(<<"screen_name">>, Props).
 
 callback() ->
     Token = wf:q(<<"oauth_token">>),
-    Verifier =wf:q(<<"oauth_verifier">>),
+    Verifier = wf:q(<<"oauth_verifier">>),
     case wf:user() of
          undefined ->
              if (Token /= undefined) andalso ( Verifier/= undefined) ->
@@ -38,17 +38,17 @@ callback() ->
                  true -> skip  end;
          _ -> skip end.
 
-login_button() -> #panel{class=["btn-group"], body=
+login_button() -> application:get_env(avz,twitter_button,#panel{class=["btn-group"], body=
     #link{id=twlogin, class=[btn, "btn-info", "btn-large", "btn-lg"],
         body=[#i{class=[fa,"fa-twitter","fa-lg","icon-twitter", "icon-large"]}, <<"Twitter">>],
-        postback={twitter,logintwitter}}}.
+        postback={twitter,logintwitter}}}).
 
 sdk() -> [].
 api_event(_,_,_) -> ok.
 event({twitter,logintwitter}) ->
     case get_request_token() of
          {RequestToken, _, _} -> wf:redirect(authenticate_url(RequestToken));
-         {error, R} -> error_logger:info_msg("Twitter request failed:", [R]), [] end.
+         {error, R} -> wf:info(?MODULE, "Twitter request failed:", [R]), [] end.
 
 get_request_token()->
   URL = "https://api.twitter.com/oauth/request_token",

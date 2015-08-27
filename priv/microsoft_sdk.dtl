@@ -44,7 +44,7 @@ function onLogin() {
         console.log("{{event}}");
     }
 }
- 
+
 function onSessionChange() {
     var session = WL.getSession();
     if (session) {
