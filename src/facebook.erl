@@ -29,7 +29,7 @@ registration_data(Props, facebook, Ori)->
                 email = Email,
                 names = proplists:get_value(<<"first_name">>, Props),
                 surnames = proplists:get_value(<<"last_name">>, Props),
-                tokens = avz:merge({facebook,Id},Ori#user.tokens),
+                tokens = avz:update({facebook,Id},Ori#user.tokens),
                 birth = {element(3, BirthDay), element(1, BirthDay), element(2, BirthDay)},
                 register_date = os:timestamp(),
                 status = ok }.
