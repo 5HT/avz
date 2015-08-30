@@ -8,6 +8,7 @@
 sha(Pass) -> crypto:hmac(wf:config(n2o,hmac,sha256),n2o_secret:secret(),wf:to_binary(Pass)).
 update({K,V},P) -> wf:setkey(K,1,case P of undefined -> []; _P -> _P end,{K,V}).
 
+coalesce(X,undefined) -> X;
 coalesce(_,Y) -> Y.
 merge(A,B) -> list_to_tuple([ coalesce(X,Y) || {X,Y} <- lists:zip(tuple_to_list(A),tuple_to_list(B)) ]).
 
