@@ -1,6 +1,7 @@
 -module(google).
 -author('Andrii Zadorozhnii').
 -include_lib("avz/include/avz.hrl").
+-include_lib("nitro/include/nitro.hrl").
 -include_lib("n2o/include/wf.hrl").
 -include_lib("kvs/include/user.hrl").
 -compile(export_all).
