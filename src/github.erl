@@ -34,7 +34,7 @@ api_call(Name, Props) ->
     case httpc:request(get, {oauth:uri(?API_URI++Name, Token), ?REQ_HEADER}, [], []) of
          {error, reason} -> api_error;
          {ok, {HttpResponse, _, Body}} -> 
-                case HttpResponse of {"HTTP/1.1", 200, "OK"} -> n2o_json:decode(Body); _ -> error end;
+                case HttpResponse of {"HTTP/1.1", 200, "OK"} -> {Res} = ?AVZ_JSON:decode(list_to_binary(Body)), Res; _ -> error end;
          {ok, _} -> api_error end.
 
 sdk() -> [].
@@ -45,7 +45,7 @@ callback() ->
          undefined when Code =/= undefined andalso State == <<"state">> ->
             case github:get_access_token(Code) of
                  not_authorized -> skip;
-                 Props -> UserData = github:user(Props), avz:login(github, UserData#struct.lst) end;
+                 Props -> UserData = github:user(Props), avz:login(github, UserData) end;
          _ -> skip end.
 
 registration_data(Props, github, Ori) ->
