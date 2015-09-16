@@ -35,7 +35,7 @@ callback() ->
              if (Token /= undefined) andalso ( Verifier/= undefined) ->
                    case get_access_token(binary_to_list(Token), binary_to_list(Verifier)) of
                         not_authorized -> skip;
-                        Props -> UserData = show(Props), avz:login(twitter, UserData#struct.lst) end;
+                        Props -> UserData = show(Props), avz:login(twitter, UserData) end;
                  true -> skip  end;
          _ -> skip end.
 
@@ -95,7 +95,7 @@ show(Props)->
                             ?CONSUMER, oauth:token(Props), oauth:token_secret(Props)),
   case Response of
     {HttpResponse, _, Body} -> case HttpResponse of
-                                    {"HTTP/1.1", 200, "OK"} ->  n2o_json:decode(Body);
+                                    {"HTTP/1.1", 200, "OK"} ->  {Res} = ?AVZ_JSON:decode(list_to_binary(Body)), Res;
                                     _-> error end;
     _ -> error
   end.

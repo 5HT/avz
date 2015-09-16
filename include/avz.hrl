@@ -10,3 +10,6 @@
              callback/0,          % Callback part of HTTP redirect based login methods
              registration_data/3  % Process Parameters
             ]).
+-ifndef(AVZ_JSON).
+-define(AVZ_JSON, (application:get_env(avz,json,jsone))).
+-endif.

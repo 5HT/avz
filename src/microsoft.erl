@@ -15,8 +15,8 @@ api_event(_, Args, _)->
     [_|K1] = J,
     [_|K2] = lists:reverse(K1),
     K = lists:reverse(K2),
-    Struct = n2o_json:decode(K),
-    avz:login(microsoft, Struct#struct.lst).
+    {D} = ?AVZ_JSON:decode(list_to_binary(K)),
+    avz:login(microsoft, D).
 
 registration_data(Props, microsoft, Ori)->
     wf:info(?MODULE,"Microsoft Login: ~p",[Props]),

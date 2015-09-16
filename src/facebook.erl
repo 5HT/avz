@@ -13,7 +13,7 @@
 
 callback() -> ok.
 event({facebook,_Event}) -> wf:wire("fb_login();"), ok.
-api_event(fbLogin, Args, _Term) -> JSArgs = n2o_json:decode(Args), avz:login(facebook, JSArgs#struct.lst).
+api_event(fbLogin, Args, _Term) -> {JSArgs} = ?AVZ_JSON:decode(list_to_binary(Args)), avz:login(facebook, JSArgs).
 
 registration_data(Props, facebook, Ori)->
     Id = proplists:get_value(<<"id">>, Props),
@@ -22,7 +22,7 @@ registration_data(Props, facebook, Ori)->
         BD -> list_to_tuple([list_to_integer(X) || X <- string:tokens(binary_to_list(BD), "/")]) end,
     Email = email_prop(Props, facebook),
     [UserName|_] = string:tokens(binary_to_list(Email),"@"),
-    Cover = case proplists:get_value(<<"cover">>,Props) of undefined -> ""; P -> case proplists:get_value(<<"source">>,P#struct.lst) of undefined -> ""; C -> binary_to_list(C) end end,
+    Cover = case proplists:get_value(<<"cover">>,Props) of undefined -> ""; {P} -> case proplists:get_value(<<"source">>,P) of undefined -> ""; C -> binary_to_list(C) end end,
     Ori#user{   id = Email,
                 display_name = UserName,
                 images = avz:update({fb_cover,Cover},avz:update({fb_avatar,"https://graph.facebook.com/" ++ binary_to_list(Id) ++ "/picture?type=large"},Ori#user.images)),

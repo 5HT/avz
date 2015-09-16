@@ -9,7 +9,7 @@
 -define(GPLUS_CLIENT_ID,     application:get_env(web, gplus_client_id,    [])).
 -define(GPLUS_COOKIE_POLICY, application:get_env(web, gplus_cookiepolicy, [])).
 
-api_event(plusLogin, Args, _)-> JSArgs = n2o_json:decode(Args), avz:login(google, JSArgs#struct.lst).
+api_event(plusLogin, Args, _)-> {JSArgs} = ?AVZ_JSON:decode(list_to_binary(Args)), avz:login(google, JSArgs).
 
 registration_data(Props, google, Ori)->
     Id = proplists:get_value(<<"id">>, Props),
