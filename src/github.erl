@@ -2,7 +2,7 @@
 -author('Andrii Zadorozhnii').
 -include_lib("nitro/include/nitro.hrl").
 -include_lib("n2o/include/wf.hrl").
--include_lib("kvs/include/user.hrl").
+-include_lib("avz/include/avz_user.hrl").
 -include_lib("avz/include/avz.hrl").
 -compile(export_all).
 -export(?API).
@@ -52,14 +52,14 @@ registration_data(Props, github, Ori) ->
     Id = proplists:get_value(<<"id">>, Props),
     Name = proplists:get_value(<<"name">>, Props),
     Email = email_prop(Props, github),
-    Ori#user{   id= Email,
+    Ori#avz_user{   id= Email,
                 username = binary_to_list(proplists:get_value(<<"login">>, Props)),
                 display_name = Name,
-                images = avz:update({gh_avatar,proplists:get_value(<<"avatar_url">>, Props)},Ori#user.images),
+                images = avz:update({gh_avatar,proplists:get_value(<<"avatar_url">>, Props)},Ori#avz_user.images),
                 email = Email,
                 names  = Name,
                 surnames = [],
-                tokens = avz:update({github,Id},Ori#user.tokens),
+                tokens = avz:update({github,Id},Ori#avz_user.tokens),
                 register_date = os:timestamp(),
                 status = ok }.
 
