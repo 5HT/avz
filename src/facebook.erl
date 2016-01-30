@@ -3,7 +3,7 @@
 -include_lib("avz/include/avz.hrl").
 -include_lib("nitro/include/nitro.hrl").
 -include_lib("n2o/include/wf.hrl").
--include_lib("kvs/include/user.hrl").
+-include_lib("avz/include/avz_user.hrl").
 
 -compile(export_all).
 -export(?API).
@@ -23,13 +23,13 @@ registration_data(Props, facebook, Ori)->
     Email = email_prop(Props, facebook),
     [UserName|_] = string:tokens(binary_to_list(Email),"@"),
     Cover = case proplists:get_value(<<"cover">>,Props) of undefined -> ""; {P} -> case proplists:get_value(<<"source">>,P) of undefined -> ""; C -> binary_to_list(C) end end,
-    Ori#user{   id = Email,
+    Ori#avz_user{   id = Email,
                 display_name = UserName,
-                images = avz:update({fb_cover,Cover},avz:update({fb_avatar,"https://graph.facebook.com/" ++ binary_to_list(Id) ++ "/picture?type=large"},Ori#user.images)),
+                images = avz:update({fb_cover,Cover},avz:update({fb_avatar,"https://graph.facebook.com/" ++ binary_to_list(Id) ++ "/picture?type=large"},Ori#avz_user.images)),
                 email = Email,
                 names = proplists:get_value(<<"first_name">>, Props),
                 surnames = proplists:get_value(<<"last_name">>, Props),
-                tokens = avz:update({facebook,Id},Ori#user.tokens),
+                tokens = avz:update({facebook,Id},Ori#avz_user.tokens),
                 birth = {element(3, BirthDay), element(1, BirthDay), element(2, BirthDay)},
                 register_date = os:timestamp(),
                 status = ok }.

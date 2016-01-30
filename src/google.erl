@@ -3,7 +3,7 @@
 -include_lib("avz/include/avz.hrl").
 -include_lib("nitro/include/nitro.hrl").
 -include_lib("n2o/include/wf.hrl").
--include_lib("kvs/include/user.hrl").
+-include_lib("avz/include/avz_user.hrl").
 -compile(export_all).
 -export(?API).
 -define(GPLUS_CLIENT_ID,     application:get_env(web, gplus_client_id,    [])).
@@ -18,13 +18,13 @@ registration_data(Props, google, Ori)->
     GivenName = proplists:get_value(<<"given_name">>, Props),
     FamilyName = proplists:get_value(<<"family_name">>, Props),
     Email = email_prop(Props,google),
-    Ori#user{   id = Email,
+    Ori#avz_user{   id = Email,
                 display_name = proplists:get_value(<<"displayName">>, Props),
-                images = avz:update({google_avatar,Image},Ori#user.images),
+                images = avz:update({google_avatar,Image},Ori#avz_user.images),
                 email = Email,
                 names = GivenName,
                 surnames = FamilyName,
-                tokens = avz:update({google,Id},Ori#user.tokens),
+                tokens = avz:update({google,Id},Ori#avz_user.tokens),
                 register_date = os:timestamp(),
                 sex = proplists:get_value(<<"gender">>, Props),
                 status = ok }.
