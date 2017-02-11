@@ -1,11 +1,11 @@
 <script>
 window.fbAsyncInit = function() {
-  FB.init({ appId: '{{appid}}', channelUrl: ' {{channelUrl}}', status: true, cookie: true, xfbml: true, oauth: true });
+  FB.init({appId: '{{appid}}',cookie: true,status: true,xfbml: false,version: 'v2.8'});
 
   FB.getLoginStatus(function(response) {
-      var inIframe= top!=self;
-      if(inIframe && response.status == 'connected' && fbLogin)
-        FB.api("/me?fields=id,first_name,last_name,email,birthday,cover", function(response){ fbLogin(response);});
+    var inIframe= top!=self;
+    if(inIframe && response.status == 'connected' && fbLogin)
+      FB.api("/me?fields=id,first_name,last_name,email,birthday,cover", function(response){ fbLogin(response);});
   });
 };
 
@@ -19,10 +19,11 @@ function fb_login(){
   });
 }
 
-(function(d){
-  var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+(function(d, s, id){
+  var js, fjs = d.getElementsByTagName(s)[0];
   if (d.getElementById(id)) {return;}
-  js = d.createElement('script'); js.id = id; js.async = true; js.src = "//connect.facebook.net/en_US/all.js?v=2";
-  ref.parentNode.insertBefore(js, ref);
-}(document));
+  js = d.createElement(s); js.id = id; js.async = true;
+  js.src = "//connect.facebook.net/en_US/sdk.js";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
 </script>

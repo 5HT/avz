@@ -8,8 +8,7 @@
 -compile(export_all).
 -export(?API).
 
--define(HTTP_ADDRESS, application:get_env(web, http_address, [])).
--define(FB_APP_ID,    application:get_env(web, fb_id,        [])).
+-define(FB_APP_ID,    application:get_env(avz, fb_id,        [])).
 
 callback() -> ok.
 event({facebook,_Event}) -> wf:wire("fb_login();"), ok.
@@ -48,4 +47,4 @@ sdk() ->
     wf:wire(#api{name=fbAutoLogin, tag=fb}),
     wf:wire(#api{name=fbLogin, tag=fb}),
     [ #dtl{bind_script=false, file="facebook_sdk", ext="dtl", folder="priv/static/js",
-        bindings=[{appid, ?FB_APP_ID},{channelUrl, ?HTTP_ADDRESS ++ "/static/channel.html"} ] } ].
+        bindings=[{appid, ?FB_APP_ID}] } ].
