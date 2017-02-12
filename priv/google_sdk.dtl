@@ -3,8 +3,12 @@ var m = document.createElement('meta');
 m.name = "google-signin-client_id"; m.content = "{{clientid}}";
 document.getElementsByTagName('head')[0].appendChild(m);
 
-window.onbeforeunload = function(e){ gapi.auth2.getAuthInstance().signOut(); }
+var rf = document.createElement('link');
+rf.rel = "stypesheet"; rf.type = "text/css";
+rf.href = "https://fonts.googleapis.com/css?family=Roboto";
+document.getElementsByTagName('head')[0].appendChild(rf);
 
+window.onbeforeunload = function(e){ gapi.auth2.getAuthInstance().signOut(); }
 
 function render(){
   gapi.signin2.render('{{loginbtnid}}', {
