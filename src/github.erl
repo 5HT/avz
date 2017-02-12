@@ -7,8 +7,8 @@
 -compile(export_all).
 -export(?API).
 
--define(CLIENT_ID,        application:get_env(web, github_client_id,     [])).
--define(CLIENT_SECRET,    application:get_env(web, github_client_secret, [])).
+-define(CLIENT_ID,        application:get_env(avz, github_client_id,     [])).
+-define(CLIENT_SECRET,    application:get_env(avz, github_client_secret, [])).
 -define(OAUTH_URI,        "https://github.com/login/oauth").
 -define(AUTHORIZE_URI,    ?OAUTH_URI ++ "/authorize").
 -define(ACCESS_TOKEN_URI, ?OAUTH_URI ++ "/access_token").
@@ -24,9 +24,10 @@ get_access_token(Code) ->
     HttpOptions = [{autoredirect, false}],
     case httpc:request(post, {oauth:uri(?ACCESS_TOKEN_URI, ReqParams), [], "", []}, HttpOptions, []) of
         {error, _} -> not_authorized;
-        {ok, R = {{"HTTP/1.1",200,"OK"}, _, _}} ->
-              Params = oauth:params_decode(R),
-              case proplists:get_value("error", Params, undefined) of undefined -> Params; _E -> not_authorized end;
+        {ok, {{"HTTP/1.1",200,"OK"}, Headers, Body}} ->
+          Params = lists:append(Headers,
+            [list_to_tuple(string:tokens(P1, "=")) || P1 <- string:tokens(Body, "&")]),
+          case proplists:get_value(<<"error">>, Params, undefined) of undefined -> Params; _E -> not_authorized end;
         {ok, _} -> not_authorized end.
 
 api_call(Name, Props) ->
@@ -64,7 +65,7 @@ registration_data(Props, github, Ori) ->
                 status = ok }.
 
 email_prop(Props, github) ->
-    Mail = proplists:get_value(<<"email">>, Props),
+    Mail = proplists:get_value(<<"email">>, Props, undefined),
     L = wf:to_list(Mail),
     case avz_validator:is_email(L) of
         true -> L;
