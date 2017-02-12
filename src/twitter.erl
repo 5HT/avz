@@ -6,8 +6,8 @@
 -include_lib("avz/include/avz_user.hrl").
 -compile(export_all).
 -export(?API).
--define(CONSUMER_KEY,    application:get_env(web, tw_consumer_key,    [])).
--define(CONSUMER_SECRET, application:get_env(web, tw_consumer_secret, [])).
+-define(CONSUMER_KEY,    application:get_env(avz, tw_consumer_key,    [])).
+-define(CONSUMER_SECRET, application:get_env(avz, tw_consumer_secret, [])).
 -define(CONSUMER,        {?CONSUMER_KEY, ?CONSUMER_SECRET, hmac_sha1}).
 
 registration_data(Props, twitter, Ori)->
@@ -55,6 +55,7 @@ get_request_token()->
   URL = "https://api.twitter.com/oauth/request_token",
   case oauth:get(URL, [], ?CONSUMER) of
     {ok, Response} ->
+      % json response {"errors":[{"code": Code,"message":Message}]} should be handled here
       Params = oauth:params_decode(Response),
       RequestToken = oauth:token(Params),
       RequestTokenSecret = oauth:token_secret(Params),
@@ -85,6 +86,7 @@ get_access_token(Token, Verifier)->
 
 authenticate_url(RequestToken)->
     oauth:uri("https://api.twitter.com/oauth/authenticate", [{"oauth_token", RequestToken}]).
+
 authorize_url(RequestToken)->
     oauth:uri("https://api.twitter.com/oauth/authorize", [{"oauth_token", RequestToken}]).
 
