@@ -24,7 +24,8 @@ event({login, #avz_user{}=U, N}) -> Updated = merge(U,N), kvs:put(Updated), logi
 event({Method,Event}) -> Method:event({Method,Event});
 event(Ev) ->  wf:info(?MODULE,"Page Event ~p",[Ev]).
 
-api_event(plusLogin, Args, Term) -> google:api_event(plusLogin, Args, Term);
+api_event(gLogin, Args, Term) -> google:api_event(gLogin, Args, Term);
+api_event(gLoginFail, Args, Term) -> google:api_event(gLoginFail, Args, Term);
 api_event(fbLogin, Args, Term)   -> facebook:api_event(fbLogin, Args, Term);
 api_event(winLogin, Args, Term)  -> microsoft:api_event(winLogin, Args, Term);
 api_event(Name, Args, Term)      -> wf:info(?MODULE,"Unknown API event: ~p ~p ~p",[Name, Args, Term]).

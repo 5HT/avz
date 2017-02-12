@@ -6,39 +6,50 @@
 -include_lib("avz/include/avz_user.hrl").
 -compile(export_all).
 -export(?API).
--define(GPLUS_CLIENT_ID,     application:get_env(web, gplus_client_id,    [])).
--define(GPLUS_COOKIE_POLICY, application:get_env(web, gplus_cookiepolicy, [])).
 
-api_event(plusLogin, Args, _)-> {JSArgs} = ?AVZ_JSON:decode(list_to_binary(Args)), avz:login(google, JSArgs).
+-define(G_CLIENT_ID,     application:get_env(avz, g_client_id,    [])).
+-define(G_COOKIE_POLICY, application:get_env(avz, g_cookiepolicy, [])).
+-define(G_BTN_ID,        application:get_env(avz, g_btn_id, "gloginbtn")).
+-define(G_BTN_HEIGHT,    application:get_env(avz, g_btn_height, 50)).
+-define(G_BTN_WIDTH,     application:get_env(avz, g_btn_width, 240)).
+-define(G_BTN_THEME,     application:get_env(avz, g_btn_theme, "light")).
+-define(G_BTN_LONGTITLE, application:get_env(avz, g_btn_longtitle, true)).
+
+api_event(gLogin, Args, _) -> {JSArgs} = ?AVZ_JSON:decode(list_to_binary(Args)), avz:login(google, JSArgs);
+api_event(gLoginFail, Args, _) -> wf:info(?MODULE, "Login failed ~p~n", [Args]).
 
 registration_data(Props, google, Ori)->
-    Id = proplists:get_value(<<"id">>, Props),
-    _Name = proplists:get_value(<<"name">>, Props),
-    Image = proplists:get_value(<<"picture">>, Props),
-    GivenName = proplists:get_value(<<"given_name">>, Props),
-    FamilyName = proplists:get_value(<<"family_name">>, Props),
+    Id = proplists:get_value(<<"Eea">>, Props),
+    Name = proplists:get_value(<<"ig">>, Props),
+    Image = proplists:get_value(<<"Paa">>, Props),
+    GivenName = proplists:get_value(<<"ofa">>, Props),
+    FamilyName = proplists:get_value(<<"wea">>, Props),
     Email = email_prop(Props,google),
-    Ori#avz_user{   id = Email,
-                display_name = proplists:get_value(<<"displayName">>, Props),
+    Ori#avz_user{id = Email,
+                display_name = Name,
                 images = avz:update({google_avatar,Image},Ori#avz_user.images),
                 email = Email,
                 names = GivenName,
                 surnames = FamilyName,
                 tokens = avz:update({google,Id},Ori#avz_user.tokens),
                 register_date = os:timestamp(),
-                sex = proplists:get_value(<<"gender">>, Props),
+                % sex = proplists:get_value(<<"gender">>, Props),
                 status = ok }.
 
-email_prop(Props, _) -> proplists:get_value(<<"email">>, Props).
+email_prop(Props, _) -> proplists:get_value(<<"U3">>, Props).
 
-login_button()-> application:get_env(avz,google_button,#panel{id=plusloginbtn, class=["btn-group"], body=
-    #link{class=[btn, "btn-google-plus", "btn-large","btn-lg"],
-        body=[#i{class=[fa,"fa-google-plus","fa-lg","icon-google-plus", "icon-large"]}, <<"Google">>] }}).
+login_button()-> #panel{id=?G_BTN_ID}.
 
 event(_) -> ok.
 callback() -> ok.
 sdk() ->
-    wf:wire(#api{name=plusLogin, tag=plus}),
+    wf:wire(#api{name=gLogin, tag=plus}),
+    wf:wire(#api{name=gLoginFail, tag=plus}),
     #dtl{bind_script=false, file="google_sdk", ext="dtl", folder="priv/static/js",
-        bindings=[{loginbtnid, plusloginbtn},{clientid, ?GPLUS_CLIENT_ID},{cookiepolicy, ?GPLUS_COOKIE_POLICY}]}.
-
+        bindings=[{loginbtnid, ?G_BTN_ID},
+          {clientid,    ?G_CLIENT_ID},
+          {cookiepolicy,?G_COOKIE_POLICY}, 
+          {height,      ?G_BTN_HEIGHT},
+          {width,       ?G_BTN_WIDTH},
+          {theme,       ?G_BTN_THEME},
+          {longtitle,   ?G_BTN_LONGTITLE} ]}.

@@ -1,28 +1,27 @@
 <script type="text/javascript">
+var m = document.createElement('meta');
+m.name = "google-signin-client_id"; m.content = "{{clientid}}";
+document.getElementsByTagName('head')[0].appendChild(m);
 
-function plusoneCallback(auth){
-  if (!auth['g-oauth-window']) { console.log('skip autologin'); }
-  else if(auth['access_token']) {
-    gapi.client.load('oauth2', 'v2', function(){
-      gapi.client.oauth2.userinfo.get().execute(function(oauthResp){
-            if(plusLogin) plusLogin(oauthResp);
-     }); });
-  } else if(auth['error']) { console.log('error'); }
-}
+window.onbeforeunload = function(e){ gapi.auth2.getAuthInstance().signOut(); }
+
 
 function render(){
-  gapi.signin.render('{{loginbtnid}}', {
-    'callback':'plusoneCallback',
-    'clientid':'{{clientid}}',
-    'cookiepolicy': '{{cookiepolicy}}',
-    'requestvisibleactions':'http://schemas.google.com/AddActivity',
-    'scope':'https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email '
+  gapi.signin2.render('{{loginbtnid}}', {
+    'width'     : '{{width}}',
+    'height'    : '{{height}}',
+    'longtitle' : '{{longtitle}}',
+    'theme'     : '{{theme}}',
+    // don't pass user.getAuthResponse().id_token
+    // basic profile is enough
+    'onsuccess' : function(user){ if(gLogin) gLogin(user.getBasicProfile()) },
+    'onfailure' : function(err) { if(gLoginFail) gLoginFail(err) }
   });
 }
 
 (function() {
   var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-  po.src = 'https://apis.google.com/js/client:plusone.js?parsetags=explicit&onload=render';
+  po.src = 'https://apis.google.com/js/platform.js?onload=render';
   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
 })();
 </script>
