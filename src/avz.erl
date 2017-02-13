@@ -21,6 +21,7 @@ event(logout) -> wf:user(undefined), wf:redirect(?LOGIN_PAGE);
 event(to_login) -> wf:redirect(?LOGIN_PAGE);
 event({register, #avz_user{}=U}) -> kvs:put(U), login_user(U); % sample
 event({login, #avz_user{}=U, N}) -> Updated = merge(U,N), kvs:put(Updated), login_user(Updated); % sample
+event({error, E}) -> (?CTX#cx.module):event({login_failed, E});
 event({Method,Event}) -> Method:event({Method,Event});
 event(Ev) ->  wf:info(?MODULE,"Page Event ~p",[Ev]).
 

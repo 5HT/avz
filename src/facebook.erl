@@ -43,8 +43,6 @@ login_button() -> application:get_env(avz,facebook_button,
                         <<"Facebook">>], postback={facebook,loginClick} }}).
 
 sdk() ->
-    wf:wire(#api{name=setFbIframe, tag=fb}),
-    wf:wire(#api{name=fbAutoLogin, tag=fb}),
     wf:wire(#api{name=fbLogin, tag=fb}),
     [ #dtl{bind_script=false, file="facebook_sdk", ext="dtl", folder="priv/static/js",
         bindings=[{appid, ?FB_APP_ID}] } ].
