@@ -3,7 +3,7 @@
 -include_lib("nitro/include/nitro.hrl").
 -include_lib("n2o/include/wf.hrl").
 -include_lib("avz/include/avz.hrl").
--include_lib("avz/include/avz_user.hrl").
+-include_lib("kvs/include/user.hrl").
 -compile(export_all).
 -export(?API).
 -define(CONSUMER_KEY,    application:get_env(avz, tw_consumer_key,    [])).
@@ -14,14 +14,14 @@ registration_data(Props, twitter, Ori)->
     Id = proplists:get_value(<<"id_str">>, Props),
     UserName = binary_to_list(proplists:get_value(<<"screen_name">>, Props)),
     Email = email_prop(Props,twitter),
-    Ori#avz_user{   id = Email,
+    Ori#user{   id = Email,
                 username = re:replace(UserName, "\\.", "_", [{return, list}]),
                 display_name = proplists:get_value(<<"screen_name">>, Props),
-                images = avz:update({tw_avatar,proplists:get_value(<<"profile_image_url">>, Props)},Ori#avz_user.images),
+                images = avz:update({tw_avatar,proplists:get_value(<<"profile_image_url">>, Props)},Ori#user.images),
                 names = proplists:get_value(<<"name">>, Props),
                 email = Email,
                 surnames = [],
-                tokens = avz:update({twitter,Id},Ori#avz_user.tokens),
+                tokens = avz:update({twitter,Id},Ori#user.tokens),
                 register_date = os:timestamp(),
                 status = ok }.
 

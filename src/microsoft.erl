@@ -3,7 +3,7 @@
 -include_lib("avz/include/avz.hrl").
 -include_lib("nitro/include/nitro.hrl").
 -include_lib("n2o/include/wf.hrl").
--include_lib("avz/include/avz_user.hrl").
+-include_lib("kvs/include/user.hrl").
 -compile(export_all).
 -export(?API).
 
@@ -37,12 +37,12 @@ registration_data(Props, microsoft, Ori)->
     GivenName = proplists:get_value(<<"givenName">>, Props),
     FamilyName = proplists:get_value(<<"surname">>, Props),
     Email = email_prop(Props,microsoft),
-    Ori#avz_user{ id = Email,
+    Ori#user{ id = Email,
                 display_name = proplists:get_value(<<"displayName">>, Props),
                 email = Email,
                 names = GivenName,
                 surnames = FamilyName,
-                tokens = avz:update({microsoft,Id},Ori#avz_user.tokens),
+                tokens = avz:update({microsoft,Id},Ori#user.tokens),
                 register_date = os:timestamp(),
                 sex = proplists:get_value(<<"gender">>, Props),
                 status = ok }.

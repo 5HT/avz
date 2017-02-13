@@ -3,17 +3,17 @@
 -include_lib("avz/include/avz.hrl").
 -include_lib("nitro/include/nitro.hrl").
 -include_lib("n2o/include/wf.hrl").
--include_lib("avz/include/avz_user.hrl").
+-include_lib("kvs/include/user.hrl").
 -compile(export_all).
 -export(?API).
 
 registration_data(Props, email, Ori)->
   Email = email_prop(Props, email),
-  Ori#avz_user{ id = Email,
+  Ori#user{ id = Email,
             display_name = Email,
             email = Email,
             register_date = os:timestamp(),
-            tokens = avz:update({email,Email},Ori#avz_user.tokens),
+            tokens = avz:update({email,Email},Ori#user.tokens),
             status = ok,
             password = avz:sha(proplists:get_value(<<"password">>,Props))}.
 

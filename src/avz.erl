@@ -1,7 +1,7 @@
 -module(avz).
 -author('Maxim Sokhatsky').
 -compile(export_all).
--include_lib("avz/include/avz_user.hrl").
+-include_lib("kvs/include/user.hrl").
 -include_lib("avz/include/avz.hrl").
 -include_lib("n2o/include/wf.hrl").
 
@@ -19,8 +19,8 @@ buttons(Methods)   -> [ M:login_button() || M <- Methods].
 event(init) -> [];
 event(logout) -> wf:user(undefined), wf:redirect(?LOGIN_PAGE);
 event(to_login) -> wf:redirect(?LOGIN_PAGE);
-event({register, #avz_user{}=U}) -> kvs:put(U), login_user(U); % sample
-event({login, #avz_user{}=U, N}) -> Updated = merge(U,N), kvs:put(Updated), login_user(Updated); % sample
+event({register, #user{}=U}) -> kvs:put(U), login_user(U); % sample
+event({login, #user{}=U, N}) -> Updated = merge(U,N), kvs:put(Updated), login_user(Updated); % sample
 event({error, E}) -> (?CTX#cx.module):event({login_failed, E});
 event({Method,Event}) -> Method:event({Method,Event});
 event(Ev) ->  wf:info(?MODULE,"Page Event ~p",[Ev]).
@@ -35,12 +35,12 @@ login_user(User) -> wf:user(User), wf:redirect(?AFTER_LOGIN).
 login(_Key, [{error, E}|_Rest])-> wf:info(?MODULE,"Auth Error: ~p", [E]);
 login(Key, Args) ->
     n2o_session:ensure_sid([],?CTX,[]),
-    case kvs:get(avz_user,Key:email_prop(Args,Key)) of
+    case kvs:get(user,Key:email_prop(Args,Key)) of
         {ok,Existed} ->
             RegData = Key:registration_data(Args, Key, Existed),
             (?CTX#cx.module):event({login, Existed, RegData});
         {error,_} ->
-            RegData = Key:registration_data(Args, Key, #avz_user{}),
+            RegData = Key:registration_data(Args, Key, #user{}),
             (?CTX#cx.module):event({register, RegData});
         U -> wf:info(?MODULE,"Unknown Login: ~p",[U]) end.
 
