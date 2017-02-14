@@ -20,7 +20,7 @@ buttons(Methods)   -> [ M:login_button() || M <- Methods].
 event(init) -> [];
 event(logout) -> wf:user(undefined), wf:redirect(?LOGIN_PAGE);
 event(to_login) -> wf:redirect(?LOGIN_PAGE);
-event({register, #user{}=U}) -> kvs:put(U), login_user(U); % sample
+event({register, #user{}=U}) -> kvs:put(U#user{id=kvs:next_id("user", 1)}), login_user(U); % sample
 event({login, #user{}=U, N}) -> Updated = merge(U,N), kvs:put(Updated), login_user(Updated); % sample
 event({error, E}) -> (?CTX#cx.module):event({login_failed, E});
 event({Method,Event}) -> Method:event({Method,Event});
