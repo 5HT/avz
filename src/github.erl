@@ -53,8 +53,7 @@ registration_data(Props, github, Ori) ->
     Id = proplists:get_value(<<"id">>, Props),
     Name = proplists:get_value(<<"name">>, Props),
     Email = email_prop(Props, github),
-    Ori#user{   id= Email,
-                username = binary_to_list(proplists:get_value(<<"login">>, Props)),
+    Ori#user{   username = binary_to_list(proplists:get_value(<<"login">>, Props)),
                 display_name = Name,
                 images = avz:update({gh_avatar,proplists:get_value(<<"avatar_url">>, Props)},Ori#user.images),
                 email = Email,
@@ -64,6 +63,7 @@ registration_data(Props, github, Ori) ->
                 register_date = os:timestamp(),
                 status = ok }.
 
+index(K) -> wf:to_binary(K).
 email_prop(Props, github) ->
     Mail = proplists:get_value(<<"email">>, Props, undefined),
     L = wf:to_list(Mail),

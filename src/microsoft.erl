@@ -37,8 +37,7 @@ registration_data(Props, microsoft, Ori)->
     GivenName = proplists:get_value(<<"givenName">>, Props),
     FamilyName = proplists:get_value(<<"surname">>, Props),
     Email = email_prop(Props,microsoft),
-    Ori#user{ id = Email,
-                display_name = proplists:get_value(<<"displayName">>, Props),
+    Ori#user{   display_name = proplists:get_value(<<"displayName">>, Props),
                 email = Email,
                 names = GivenName,
                 surnames = FamilyName,
@@ -47,6 +46,7 @@ registration_data(Props, microsoft, Ori)->
                 sex = proplists:get_value(<<"gender">>, Props),
                 status = ok }.
 
+index(K) -> wf:to_binary(K).
 email_prop(Props, _) -> proplists:get_value(<<"userPrincipalName">>, Props).
 
 login_button()-> #link{

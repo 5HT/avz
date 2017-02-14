@@ -9,14 +9,14 @@
 
 registration_data(Props, email, Ori)->
   Email = email_prop(Props, email),
-  Ori#user{ id = Email,
-            display_name = Email,
+  Ori#user{ display_name = Email,
             email = Email,
             register_date = os:timestamp(),
             tokens = avz:update({email,Email},Ori#user.tokens),
             status = ok,
             password = avz:sha(proplists:get_value(<<"password">>,Props))}.
 
+index(K) -> wf:to_binary(K).
 email_prop(Props, _) -> binary_to_list(proplists:get_value(<<"email">>, Props)).
 
 login_button() -> application:get_env(avz,email_button,#button{id=login, class=[btn, "btn-info", "btn-large", "btn-lg"], body= <<"Sign in">>, postback={email, loginemail}, source=[user,pass]}).

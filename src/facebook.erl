@@ -19,11 +19,10 @@ registration_data(Props, facebook, Ori)->
     BirthDay = case proplists:get_value(<<"birthday">>, Props) of
         undefined -> {1, 1, 1970};
         BD -> list_to_tuple([list_to_integer(X) || X <- string:tokens(binary_to_list(BD), "/")]) end,
-    Email = email_prop(Props, facebook),
+    Email = proplists:get_value(<<"email">>, Props),
     [UserName|_] = string:tokens(binary_to_list(Email),"@"),
     Cover = case proplists:get_value(<<"cover">>,Props) of undefined -> ""; {P} -> case proplists:get_value(<<"source">>,P) of undefined -> ""; C -> binary_to_list(C) end end,
-    Ori#user{   id = Email,
-                display_name = UserName,
+    Ori#user{   display_name = UserName,
                 images = avz:update({fb_cover,Cover},avz:update({fb_avatar,"https://graph.facebook.com/" ++ binary_to_list(Id) ++ "/picture?type=large"},Ori#user.images)),
                 email = Email,
                 names = proplists:get_value(<<"first_name">>, Props),
@@ -33,8 +32,8 @@ registration_data(Props, facebook, Ori)->
                 register_date = os:timestamp(),
                 status = ok }.
 
-email_prop(Props, _) ->
-    proplists:get_value(<<"email">>, Props).
+index(K) -> wf:to_binary(K).
+email_prop(Props, _) -> proplists:get_value(<<"email">>, Props).
 
 login_button() -> application:get_env(avz,facebook_button,
     #panel{class=["btn-group"], body=#link{id=loginfb,

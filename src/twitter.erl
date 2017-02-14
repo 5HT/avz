@@ -14,8 +14,7 @@ registration_data(Props, twitter, Ori)->
     Id = proplists:get_value(<<"id_str">>, Props),
     UserName = binary_to_list(proplists:get_value(<<"screen_name">>, Props)),
     Email = email_prop(Props,twitter),
-    Ori#user{   id = Email,
-                username = re:replace(UserName, "\\.", "_", [{return, list}]),
+    Ori#user{   username = re:replace(UserName, "\\.", "_", [{return, list}]),
                 display_name = proplists:get_value(<<"screen_name">>, Props),
                 images = avz:update({tw_avatar,proplists:get_value(<<"profile_image_url">>, Props)},Ori#user.images),
                 names = proplists:get_value(<<"name">>, Props),
@@ -25,6 +24,7 @@ registration_data(Props, twitter, Ori)->
                 register_date = os:timestamp(),
                 status = ok }.
 
+index(K) -> wf:to_binary(K).
 email_prop(Props, twitter) -> proplists:get_value(<<"screen_name">>, Props).
 
 callback() ->

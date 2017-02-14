@@ -15,18 +15,19 @@
 -define(G_BTN_THEME,     application:get_env(avz, g_btn_theme, "light")).
 -define(G_BTN_LONGTITLE, application:get_env(avz, g_btn_longtitle, true)).
 
+-define(ATTS, #{email => <<"U3">>, name => <<"ig">>, id => <<"Eea">>, image => <<"Paa">>}).
+
 api_event(gLogin, Args, _) -> {JSArgs} = ?AVZ_JSON:decode(list_to_binary(Args)), avz:login(google, JSArgs);
 api_event(gLoginFail, Args, _) -> wf:info(?MODULE, "Login failed ~p~n", [Args]).
 
 registration_data(Props, google, Ori)->
-    Id = proplists:get_value(<<"Eea">>, Props),
-    Name = proplists:get_value(<<"ig">>, Props),
-    Image = proplists:get_value(<<"Paa">>, Props),
+    Id = proplists:get_value(maps:get(id,?ATTS), Props),
+    Name = proplists:get_value(maps:get(name, ?ATTS), Props),
+    Image = proplists:get_value(maps:get(image,?ATTS), Props),
     GivenName = proplists:get_value(<<"ofa">>, Props),
     FamilyName = proplists:get_value(<<"wea">>, Props),
     Email = email_prop(Props,google),
-    Ori#user{id = Email,
-                display_name = Name,
+    Ori#user{   display_name = Name,
                 images = avz:update({google_avatar,Image},Ori#user.images),
                 email = Email,
                 names = GivenName,
@@ -36,7 +37,8 @@ registration_data(Props, google, Ori)->
                 % sex = proplists:get_value(<<"gender">>, Props),
                 status = ok }.
 
-email_prop(Props, _) -> proplists:get_value(<<"U3">>, Props).
+index(K) -> maps:get(K, ?ATTS, K).
+email_prop(Props, _) -> proplists:get_value(maps:get(email,?ATTS), Props).
 
 login_button()-> #panel{id=?G_BTN_ID}.
 

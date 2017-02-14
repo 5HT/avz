@@ -1,9 +1,10 @@
 -module(avz).
 -author('Maxim Sokhatsky').
 -compile(export_all).
--include_lib("kvs/include/user.hrl").
 -include_lib("avz/include/avz.hrl").
 -include_lib("n2o/include/wf.hrl").
+-include_lib("kvs/include/metainfo.hrl").
+-include_lib("kvs/include/user.hrl").
 
 sha(Pass) -> crypto:hmac(wf:config(n2o,hmac,sha256),n2o_secret:secret(),wf:to_binary(Pass)).
 update({K,V},P) -> wf:setkey(K,1,case P of undefined -> []; _P -> _P end,{K,V}).
@@ -34,14 +35,23 @@ api_event(Name, Args, Term)      -> wf:info(?MODULE,"Unknown API event: ~p ~p ~p
 login_user(User) -> wf:user(User), wf:redirect(?AFTER_LOGIN).
 login(_Key, [{error, E}|_Rest])-> wf:info(?MODULE,"Auth Error: ~p", [E]);
 login(Key, Args) ->
-    n2o_session:ensure_sid([],?CTX,[]),
-    case kvs:get(user,Key:email_prop(Args,Key)) of
-        {ok,Existed} ->
-            RegData = Key:registration_data(Args, Key, Existed),
-            (?CTX#cx.module):event({login, Existed, RegData});
-        {error,_} ->
-            RegData = Key:registration_data(Args, Key, #user{}),
-            (?CTX#cx.module):event({register, RegData});
-        U -> wf:info(?MODULE,"Unknown Login: ~p",[U]) end.
+
+  LoginFun = fun(K) ->
+    Index = proplists:get_value(Key:index(K), Args),
+    case kvs:index(user,K,Index) of
+      [Exists|_] ->
+        RegData = Key:registration_data(Args, Key, Exists),
+        (?CTX#cx.module):event({login, Exists, RegData}),
+        true;
+      _ -> false end end,
+  
+  Keys = [K || M<-kvs:modules(),T<-(M:metainfo())#schema.tables, T#table.name==user, K<-T#table.keys],
+
+  LoggedIn = lists:any(LoginFun, Keys),
+
+  if (LoggedIn =:= true) -> ok; true -> 
+    RegData = Key:registration_data(Args, Key, #user{}),
+    (?CTX#cx.module):event({register, RegData})
+  end.
 
 version() -> proplists:get_value(vsn,element(2,application:get_all_key(?MODULE))).
