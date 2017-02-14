@@ -19,6 +19,8 @@
 % ms doesn't support sslv3
 -define(HTTP_OPTS, [{ssl, [{versions,['tlsv1.2']}]}]).
 
+-define(ATTS, #{email => <<"userPrincipalName">>}).
+
 authorize_url() -> 
   Params = [{"client_id", ?CLIENT_ID},{"redirect_uri", ?OAUTH_REDIRECT},{"response_type", "code"},{"scope", ?SCOPE}],
   oauth:uri(?AUTHORIZE, Params).
@@ -46,8 +48,8 @@ registration_data(Props, microsoft, Ori)->
                 sex = proplists:get_value(<<"gender">>, Props),
                 status = ok }.
 
-index(K) -> wf:to_binary(K).
-email_prop(Props, _) -> proplists:get_value(<<"userPrincipalName">>, Props).
+index(K) -> maps:get(K, ?ATTS, wf:to_binary(K)).
+email_prop(Props, _) -> proplists:get_value(maps:get(email,?ATTS), Props).
 
 login_button()-> #link{
   id=microsoftbtn, class=[btn, "btn-microsoft", "btn-large"], 
