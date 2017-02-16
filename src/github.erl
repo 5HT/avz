@@ -72,9 +72,8 @@ email_prop(Props, github) ->
         false -> binary_to_list(proplists:get_value(<<"login">>, Props)) ++ "@github"
     end.
 
-login_button() -> application:get_env(avz,github_button,#panel{ class=["btn-group"], body=
-    #link{id=github_btn, class=[btn, "btn-large"], 
-        body=[#i{class=["icon-github", "icon-large"]}, <<"Github">>], postback={github,logingithub} }}).
+login_button() -> 
+  #link{id=github_btn, body=[<<"Github">>], postback={github,logingithub} }.
 
 api_event(_,_,_) -> ok.
 event({github,logingithub}) -> wf:redirect(github:authorize_url()).

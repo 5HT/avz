@@ -51,10 +51,8 @@ registration_data(Props, microsoft, Ori)->
 index(K) -> maps:get(K, ?ATTS, wf:to_binary(K)).
 email_prop(Props, _) -> proplists:get_value(maps:get(email,?ATTS), Props).
 
-login_button()-> #link{
-  id=microsoftbtn, class=[btn, "btn-microsoft", "btn-large"], 
-  body=[#i{class=["icon-microsoft", "icon-large"]}, <<"Microsoft">>],
-  postback={microsoft, login}}.
+login_button() -> 
+  #link{id=microsoftbtn, body=[<<"Microsoft">>],postback={microsoft, login}}.
 
 get_access_token(Code) ->
   Params = [

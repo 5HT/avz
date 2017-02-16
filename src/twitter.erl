@@ -39,10 +39,8 @@ callback() ->
                  true -> skip  end;
          _ -> skip end.
 
-login_button() -> application:get_env(avz,twitter_button,#panel{class=["btn-group"], body=
-    #link{id=twlogin, class=[btn, "btn-info", "btn-large", "btn-lg"],
-        body=[#i{class=[fa,"fa-twitter","fa-lg","icon-twitter", "icon-large"]}, <<"Twitter">>],
-        postback={twitter,logintwitter}}}).
+login_button() -> 
+  #link{id=twlogin,body=[<<"Twitter">>],postback={twitter,logintwitter}}.
 
 sdk() -> [].
 api_event(_,_,_) -> ok.

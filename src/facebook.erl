@@ -35,11 +35,8 @@ registration_data(Props, facebook, Ori)->
 index(K) -> wf:to_binary(K).
 email_prop(Props, _) -> proplists:get_value(<<"email">>, Props).
 
-login_button() -> application:get_env(avz,facebook_button,
-    #panel{class=["btn-group"], body=#link{id=loginfb,
-                  class=["btn-primary btn-large btn-lg"],
-                  body=[#i{class=[fa,"fa-facebook","fa-lg","icon-facebook","icon-large"]},
-                        <<"Facebook">>], postback={facebook,loginClick} }}).
+login_button() -> 
+  #link{id=loginfb, body=[<<"Facebook">>], postback={facebook,loginClick}}.
 
 sdk() ->
     wf:wire(#api{name=fbLogin, tag=fb}),
