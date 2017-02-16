@@ -10,6 +10,8 @@
 -define(CONSUMER_SECRET, application:get_env(avz, tw_consumer_secret, [])).
 -define(CONSUMER,        {?CONSUMER_KEY, ?CONSUMER_SECRET, hmac_sha1}).
 
+-define(ATTS, #{email => <<"screen_name">>}).
+
 registration_data(Props, twitter, Ori)->
     Id = proplists:get_value(<<"id_str">>, Props),
     UserName = binary_to_list(proplists:get_value(<<"screen_name">>, Props)),
@@ -24,8 +26,8 @@ registration_data(Props, twitter, Ori)->
                 register_date = os:timestamp(),
                 status = ok }.
 
-index(K) -> wf:to_binary(K).
-email_prop(Props, twitter) -> proplists:get_value(<<"screen_name">>, Props).
+index(K) -> maps:get(K, ?ATTS, wf:to_binary(K)).
+email_prop(Props, twitter) -> proplists:get_value(maps:get(email,?ATTS), Props).
 
 callback() ->
     Token = wf:q(<<"oauth_token">>),
