@@ -19,7 +19,7 @@ registration_data(Props, email, Ori)->
 index(K) -> wf:to_binary(K).
 email_prop(Props, _) -> binary_to_list(proplists:get_value(<<"email">>, Props)).
 
-login_button() -> application:get_env(avz,email_button,#button{id=login, class=[btn, "btn-info", "btn-large", "btn-lg"], body= <<"Sign in">>, postback={email, loginemail}, source=[user,pass]}).
+login_button() -> #button{id=login, body= <<"Sign in">>, postback={email, loginemail}, source=[user,pass]}.
 event({email,loginemail}) -> avz:login(email, [{<<"email">>, list_to_binary(wf:q(user))}, {<<"password">>, wf:q(pass)}]);
 event(_) -> ok.
 api_event(_,_,_) -> ok.

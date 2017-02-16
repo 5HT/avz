@@ -52,6 +52,52 @@ event(init) ->
   ...
 ```
 
+Configuration
+-------------
+
+Authentication endpoints can be configured in your `sys.config` under avz application settings.
+
+Available settings listed below with test applications configured for each provider and will
+call you back on `http://localhost:8000/login`.
+
+```erlang
+{
+  ...
+  {avz, [ % General
+        {after_login_page, "/index"},
+        {login_page, "/login"},
+        {json,jsone},
+
+        % Facebook Login
+        {fb_id, "176025532423202"},
+
+        % Twitter OAuth
+        {tw_consumer_key, "YwfU5qj5AYY0uwPumcw1Q"},
+        {tw_consumer_secret, "O7VjRYLWxwMgtSXZbiiY6kc1Og2il9gbo1KAIqZk"},
+
+        % Google Sign-In
+        {g_client_id, "158344909038-j6c0rbvpi09kdaqq03j2eddlf047ht3d.apps.googleusercontent.com"}, 
+        {g_cookiepolicy, "http://localhost:8000"},
+        
+        % Google Sign-In button settings
+        {g_btn_width, 240},
+        {g_btn_height, 50},
+        {g_btn_theme, "light"},
+        {g_btn_longtitle, true},
+
+        % Github OAuth
+        {github_client_id, "591bfe2556ee60ca8c32"},
+        {github_client_secret, "01411884e3c51624d3ea729ed6b047db52973e8e"},
+
+        % Microsoft Account Login
+        {ms_client_id, "54385d15-f1e0-4fcf-9bf4-042d740e0df4"},
+        {ms_client_secret, "jU0tStEzRdDPFwL9NdVGYxo"},
+        {ms_redirect_uri, "http://localhost:8000/login"}
+  ]}
+  ...
+}
+```
+
 Credits
 -------
 
