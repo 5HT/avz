@@ -20,7 +20,7 @@ index(K) -> wf:to_binary(K).
 email_prop(Props, _) -> binary_to_list(proplists:get_value(<<"email">>, Props)).
 
 login_button() -> #button{id=login, body= <<"Sign in">>, postback={email, loginemail}, source=[user,pass]}.
-event({email,loginemail}) -> avz:login(email, [{<<"email">>, list_to_binary(wf:q(user))}, {<<"password">>, wf:q(pass)}]);
+event({email,loginemail}) -> avz:login(email, [{<<"email">>, wf:q(user)}, {<<"password">>, wf:q(pass)}]);
 event(_) -> ok.
 api_event(_,_,_) -> ok.
 callback() -> ok.
