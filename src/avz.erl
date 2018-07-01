@@ -35,12 +35,15 @@ api_event(Name, Args, Term)      -> wf:info(?MODULE,"Unknown API event: ~p ~p ~p
 login_user(User) -> wf:user(User), wf:redirect(?AFTER_LOGIN).
 login(_Key, [{error, E}|_Rest])-> wf:info(?MODULE,"Auth Error: ~p", [E]);
 login(Key, Args) ->
-
   LoginFun = fun(K) ->
     Index = proplists:get_value(Key:index(K), Args),
     case kvs:index(user,K,Index) of
       [Exists|_] ->
-        RegData = Key:registration_data(Args, Key, Exists),
+        Diff = tuple_size(Exists) - tuple_size(#user{}),
+        {It, UsrExt} = lists:split(tuple_size(#iterator{}), tuple_to_list(Exists)),
+        {_,Usr} = lists:split(Diff, UsrExt),
+
+        RegData = Key:registration_data(Args, Key, list_to_tuple(lists:append([It,Usr]))),
         (?CTX#cx.module):event({login, Exists, RegData}),
         true;
       _ -> false end end,
@@ -49,7 +52,7 @@ login(Key, Args) ->
 
   LoggedIn = lists:any(LoginFun, Keys),
 
-  if (LoggedIn =:= true) -> ok; true -> 
+  if (LoggedIn =:= true) -> true; true -> 
     RegData = Key:registration_data(Args, Key, #user{}),
     (?CTX#cx.module):event({register, RegData})
   end.
