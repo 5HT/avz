@@ -13,6 +13,7 @@ Supported Methods
 * Facebook
 * Github
 * Microsoft
+* Telegram
 
 API
 ---
@@ -60,6 +61,7 @@ Authentication endpoints can be configured in your `sys.config` under avz applic
 Available settings listed below with test applications configured for each provider and will
 call you back on `http://localhost:8000/login`.
 
+
 ```erlang
 {
   ...
@@ -92,11 +94,27 @@ call you back on `http://localhost:8000/login`.
         % Microsoft Account Login
         {ms_client_id, "54385d15-f1e0-4fcf-9bf4-042d740e0df4"},
         {ms_client_secret, "jU0tStEzRdDPFwL9NdVGYxo"},
-        {ms_redirect_uri, "http://localhost:8000/login"}
+        {ms_redirect_uri, "http://localhost:8000/login"},
+        
+        % Telegram Login Widget
+        {tl_bot, "NYNJA_bot"},
+        {tl_bot_token, "548231922:AAHmXMMr38XGtH0tJMDUdiByheT2mZ7qkVI"}
+        {tl_auth_url, "http://127.0.0.1/login"},
+        {tl_request_access, "write"}
+        {tl_btn_size, "large"},
+        {tl_btn_radius, "20"},
   ]}
   ...
 }
 ```
+
+Telegram Notes
+---------------
+Login widget is displayed within the iframe, so the battle of `CPS` and `x-frame-options` is expected in different browsers.
+
+When setting a domain in BotFather with `/setdomain`, please note that telegram will cut the port part of your domain in the `X-Frame-Options` and `Content-Security-Policy` response headers. 
+
+So in fact you are limited to use 80 and 443 ports only.
 
 Credits
 -------
