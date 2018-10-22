@@ -42,7 +42,7 @@ login_button() ->
         {auth_url,        ?TL_AUTH_URL},
         {request_access,  ?TL_ACCESS} ]}.
 
-event(E) -> ok.
+event(_) -> ok.
 sdk() -> [].
 
 % HMAC-SHA-256 signature of the data-check-string with the SHA256 hash of the bot's token used as a secret key

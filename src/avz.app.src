@@ -1,6 +1,6 @@
 {application, avz,
  [
-  {description, "AVZ VXZ Token System"},
+  {description, "AVZ Social Auth"},
   {vsn, "5.10"},
   {registered, []},
   {applications, [kernel, stdlib]},
