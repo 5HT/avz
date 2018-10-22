@@ -1,10 +1,14 @@
 language: erlang
 otp_release:
-  - 21.0
+  - 19.3
+  - 20.3.8
 notifications:
   email:
     - maxim@synrc.com
     - doxtop@synrc.com
-  irc: "chat.freenode.net#n2o"
-install: "rebar get-deps compile"
-script: "rebar compile"
+script:
+  - "curl -fsSL https://raw.github.com/synrc/mad/master/mad > mad"
+  - "chmod +x mad"
+  - "./mad dep com"
+  - "rm -rf deps"
+  - "rebar get-deps clean compile"
