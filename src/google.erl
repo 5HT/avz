@@ -2,8 +2,7 @@
 -author('Andrii Zadorozhnii').
 -include_lib("avz/include/avz.hrl").
 -include_lib("nitro/include/nitro.hrl").
--include_lib("n2o/include/wf.hrl").
--include_lib("kvs/include/user.hrl").
+-include_lib("n2o/include/n2o.hrl").
 -compile(export_all).
 -export(?API).
 
@@ -18,24 +17,26 @@
 -define(ATTS, #{email => <<"U3">>, name => <<"ig">>, id => <<"Eea">>, image => <<"Paa">>}).
 
 api_event(gLogin, Args, _) -> {JSArgs} = ?AVZ_JSON:decode(list_to_binary(Args)), avz:login(google, JSArgs);
-api_event(gLoginFail, Args, _) -> wf:info(?MODULE, "Login failed ~p~n", [Args]).
+api_event(gLoginFail, Args, _) -> io:format("Login failed ~p~n", [Args]).
 
 registration_data(Props, google, Ori)->
-    Id = proplists:get_value(maps:get(id,?ATTS), Props),
-    Name = proplists:get_value(maps:get(name, ?ATTS), Props),
-    Image = proplists:get_value(maps:get(image,?ATTS), Props),
-    GivenName = proplists:get_value(<<"ofa">>, Props),
-    FamilyName = proplists:get_value(<<"wea">>, Props),
+  #{ <<"Eea">> :=Id
+   , <<"ig">>  :=Name
+   , <<"Paa">> :=Image
+   , <<"ofa">> := GivenName
+   , <<"wea">> := FamilyName
+   } = Props,
+  #{tokens:=Tokens, images:=Images} = Ori,
     Email = email_prop(Props,google),
-    Ori#user{   display_name = Name,
-                images = avz:update({google_avatar,Image},Ori#user.images),
-                email = Email,
-                names = GivenName,
-                surnames = FamilyName,
-                tokens = avz:update({google,Id},Ori#user.tokens),
-                register_date = os:timestamp(),
+    maps:merge(Ori, #{   display_name => Name,
+                images => avz:update({google_avatar,Image},Images),
+                email => Email,
+                names => GivenName,
+                surnames => FamilyName,
+                tokens => avz:update({google,Id},Tokens),
+                register_date => os:timestamp(),
                 % sex = proplists:get_value(<<"gender">>, Props),
-                status = ok }.
+                status => ok }).
 
 index(K) -> maps:get(K, ?ATTS, K).
 email_prop(Props, _) -> proplists:get_value(maps:get(email,?ATTS), Props).
@@ -45,8 +46,8 @@ login_button()-> #panel{id=?G_BTN_ID}.
 event(_) -> ok.
 callback() -> ok.
 sdk() ->
-    wf:wire(#api{name=gLogin, tag=plus}),
-    wf:wire(#api{name=gLoginFail, tag=plus}),
+    nitro:wire(#api{name=gLogin, tag=plus}),
+    nitro:wire(#api{name=gLoginFail, tag=plus}),
     #dtl{bind_script=false, file="google_sdk", ext="dtl", folder="priv/static/js",
         bindings=[{loginbtnid, ?G_BTN_ID},
           {clientid,    ?G_CLIENT_ID},

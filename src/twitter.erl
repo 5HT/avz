@@ -1,9 +1,8 @@
 -module(twitter).
 -author('Andrii Zadorozhnii').
 -include_lib("nitro/include/nitro.hrl").
--include_lib("n2o/include/wf.hrl").
+-include_lib("n2o/include/n2o.hrl").
 -include_lib("avz/include/avz.hrl").
--include_lib("kvs/include/user.hrl").
 -compile(export_all).
 -export(?API).
 -define(CONSUMER_KEY,    application:get_env(avz, tw_consumer_key,    [])).
@@ -13,26 +12,28 @@
 -define(ATTS, #{email => <<"screen_name">>}).
 
 registration_data(Props, twitter, Ori)->
-    Id = proplists:get_value(<<"id_str">>, Props),
-    UserName = binary_to_list(proplists:get_value(<<"screen_name">>, Props)),
+  #{<<"id_str">>:=Id, <<"screen_name">>:=ScreenName,<<"profile_image_url">>:=Image, <<"name">>:=Name} = Props,
+  #{images:=Images, tokens:=Tokens} =Ori,
+    UserName = binary_to_list(ScreenName),
     Email = email_prop(Props,twitter),
-    Ori#user{   username = re:replace(UserName, "\\.", "_", [{return, list}]),
-                display_name = proplists:get_value(<<"screen_name">>, Props),
-                images = avz:update({tw_avatar,proplists:get_value(<<"profile_image_url">>, Props)},Ori#user.images),
-                names = proplists:get_value(<<"name">>, Props),
-                email = Email,
-                surnames = [],
-                tokens = avz:update({twitter,Id},Ori#user.tokens),
-                register_date = os:timestamp(),
-                status = ok }.
 
-index(K) -> maps:get(K, ?ATTS, wf:to_binary(K)).
-email_prop(Props, twitter) -> proplists:get_value(maps:get(email,?ATTS), Props).
+    maps:merge(Ori, #{   username => re:replace(UserName, "\\.", "_", [{return, list}]),
+                display_name => ScreenName,
+                images => avz:update({tw_avatar,Image},Images),
+                names => Name,
+                email => Email,
+                surnames => [],
+                tokens => avz:update({twitter,Id},Tokens),
+                register_date => os:timestamp(),
+                status => ok }).
+
+index(K) -> maps:get(K, ?ATTS, nitro:to_binary(K)).
+email_prop(Props, twitter) -> maps:get(maps:get(email,?ATTS), Props).
 
 callback() ->
-    Token = wf:q(<<"oauth_token">>),
-    Verifier = wf:q(<<"oauth_verifier">>),
-    case wf:user() of
+    Token = niro:q(<<"oauth_token">>),
+    Verifier = nitro:q(<<"oauth_verifier">>),
+    case n2o:user() of
          undefined ->
              if (Token /= undefined) andalso ( Verifier/= undefined) ->
                    case get_access_token(binary_to_list(Token), binary_to_list(Verifier)) of
@@ -48,8 +49,8 @@ sdk() -> [].
 api_event(_,_,_) -> ok.
 event({twitter,logintwitter}) ->
     case get_request_token() of
-         {RequestToken, _, _} -> wf:redirect(authenticate_url(RequestToken));
-         {error, R} -> wf:info(?MODULE, "Twitter request failed:", [R]), [] end.
+         {RequestToken, _, _} -> nitro:redirect(authenticate_url(RequestToken));
+         {error, R} -> io:format("Twitter request failed: ~p~n", [R]), [] end.
 
 get_request_token()->
   URL = "https://api.twitter.com/oauth/request_token",

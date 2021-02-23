@@ -1,7 +1,7 @@
 -module(telegram).
 -include_lib("avz/include/avz.hrl").
 -include_lib("nitro/include/nitro.hrl").
--include_lib("kvs/include/user.hrl").
+-include_lib("n2o/include/n2o.hrl").
 -compile(export_all).
 -export(?API).
 
@@ -17,21 +17,23 @@
 
 api_event(_,_,_) -> ok.
 
-registration_data(Props, telegram, Ori) -> 
+registration_data(Props, telegram, Ori) ->
+  #{<<"username">>:=Uname, <<"photo_url">>:=Photo, <<"first_name">>:=FirstName, <<"last_name">>:=LastName} = Props,
+  #{tokens:=Tokens, images:=Images} = Ori,
     Id = proplists:get_value(<<"id">>, Props),
-    UserName = binary_to_list(proplists:get_value(<<"username">>, Props)),
+    UserName = binary_to_list(Uname),
     Email = email_prop(Props,telegram),
-    Ori#user{   username = re:replace(UserName, "\\.", "_", [{return, list}]),
-                display_name = proplists:get_value(<<"username">>, Props),
-                images = avz:update({tl_avatar,proplists:get_value(<<"photo_url">>, Props)},Ori#user.images),
-                names = proplists:get_value(<<"first_name">>, Props),
-                email = Email,
-                surnames = proplists:get_value(<<"last_name">>, Props),
-                tokens = avz:update({telegram,Id},Ori#user.tokens),
-                register_date = os:timestamp(),
-                status = ok }.
+    maps:merge(Ori, #{   username => re:replace(UserName, "\\.", "_", [{return, list}]),
+                display_name => Uname,
+                images => avz:update({tl_avatar,Photo},Images),
+                names => FirstName,
+                email => Email,
+                surnames => LastName,
+                tokens => avz:update({telegram,Id},Tokens),
+                register_date => os:timestamp(),
+                status => ok }).
 
-index(K) -> maps:get(K, ?ATTS, wf:to_binary(K)).
+index(K) -> maps:get(K, ?ATTS, nitro:to_binary(K)).
 email_prop(Props, telegram) -> proplists:get_value(maps:get(email,?ATTS), Props).
 
 login_button() ->
@@ -47,9 +49,9 @@ sdk() -> [].
 
 % HMAC-SHA-256 signature of the data-check-string with the SHA256 hash of the bot's token used as a secret key
 callback() ->
-    Hash = wf:q(<<"hash">>),
+    Hash = nitro:q(<<"hash">>),
 
-    Rec  = lists:filter(fun({_, undefined}) -> false; (_) -> true end, [ {T, wf:q(T)} || T <- lists:sort(?TL_USER) ]),
+    Rec  = lists:filter(fun({_, undefined}) -> false; (_) -> true end, [ {T, nitro:q(T)} || T <- lists:sort(?TL_USER) ]),
     Data = lists:join(<<"\n">>, [unicode:characters_to_nfkc_binary([K, <<"=">>, V]) || {K, V} <- Rec]),
 
     case crypto:hmac(sha256, crypto:hash(sha256, ?TL_BOT_TOKEN), Data) of <<X:256/big-unsigned-integer>> ->
