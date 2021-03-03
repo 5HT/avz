@@ -35,7 +35,7 @@ defmodule Avz.MixProject do
     {:n2o,   github: "synrc/n2o",       ref: "master", override: true},
     {:nitro, github: "synrc/nitro",     ref: "master", override: true},
     {:kvs,   github: "synrc/kvs",       ref: "master", override: true},
-    {:oauth, github: "tim/erlang-oauth",ref: "v1.6.0"}
+    {:oauth, github: "tim/erlang-oauth",ref: "v2.0.0"}
   ]
  end
 end
