@@ -1,3 +1,4 @@
 ebin
-.rebar3
+deps
+*.lock
 .fetch
