@@ -2,3 +2,4 @@ ebin
 deps
 *.lock
 .fetch
+_build

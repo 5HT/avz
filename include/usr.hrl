@@ -1,6 +1,5 @@
 -ifndef(USR_HRL).
 -define(USR_HRL, true).
-%-include_lib("kvs/incude/").
 
 -record(user,   { id = kvs:seq([],[]) :: term()
                 , email = []

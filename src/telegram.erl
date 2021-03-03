@@ -1,5 +1,5 @@
 -module(telegram).
--include_lib("avz/include/avz.hrl").
+-include("avz.hrl").
 -include_lib("nitro/include/nitro.hrl").
 -include_lib("n2o/include/n2o.hrl").
 -compile(export_all).

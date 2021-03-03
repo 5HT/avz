@@ -1,7 +1,7 @@
 -module(avz).
 -author('Maxim Sokhatsky').
 -compile(export_all).
--include_lib("avz/include/avz.hrl").
+-include("avz.hrl").
 -include_lib("nitro/include/nitro.hrl").
 -include_lib("n2o/include/n2o.hrl").
 %-include_lib("kvs/include/metainfo.hrl").

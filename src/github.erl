@@ -2,7 +2,7 @@
 -author('Andrii Zadorozhnii').
 -include_lib("nitro/include/nitro.hrl").
 -include_lib("n2o/include/n2o.hrl").
--include_lib("avz/include/avz.hrl").
+-include("avz.hrl").
 -compile(export_all).
 -export(?API).
 
