@@ -3,3 +3,4 @@ deps
 *.lock
 .fetch
 _build
+.rebar3
