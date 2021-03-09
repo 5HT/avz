@@ -60,14 +60,17 @@ render_element(#cipher_sdk{id=Id,class=Class,title=T}) ->
     Logout  = nitro:f("ws.send(~s);", [?AVZ(cph,Cid,logout)]),
 
     OnError  = iolist_to_binary([
-        "qi('",Stid,"').innerHTML='<div>Криптографічний сервіс <b>",?CIPHER_URL,"</b>не доступний.</div>",
-        "<div>Запустіть Сipher сервіс локально та перевірте CORS налаштування браузера.</div>",
-        "<div>Завантажити java агент можна за посиланням: <a href=\"",?CIPHER_JNLP,"\">pcs-infotech.jnlp</a></div>';"
+        "qi('",Stid,"').innerHTML='<div>",
+        <<"Криптографічний сервіс"/utf8>>, " <b>",?CIPHER_URL,"</b>", <<"не доступний."/utf8>>, ",</div>",
+        "<div>",<<"Запустіть Сipher сервіс локально та перевірте CORS налаштування браузера."/utf8>>,"</div>",
+        "<div>",<<"Завантажити java агент можна за посиланням:"/utf8>>,
+        " <a href=",?CIPHER_JNLP,">pcs-infotech.jnlp</a></div>';"
     ]),
     OnSession = iolist_to_binary(["qi('",Ssid,"').innerHTML=event.detail.html();"]),
     OnStatus  = iolist_to_binary(["qi('",Stid,"').innerHTML=event.detail.html();"]),
-    OnPath    = iolist_to_binary(["qi('",Phid,"').innerHTML=event.detail.html();"]),
-    OnCa      = iolist_to_binary(["event.detail.ca.ca.forEach(o=> console.log(o));"]),
+    OnPath    = iolist_to_binary(["qi('",Phid,"').value=event.detail.html();"]),
+    OnCa      = iolist_to_binary(["let s=qi('",Caid,"'),j=event.detail.ca.apply(),j1=JSON.parse(j);",
+        "j1.forEach(({label:l, value:v}) => {let o=qn('option');o.value=v;o.label=l;s.add(o);});"]),
 
     OnLogin   = iolist_to_binary([
         "qi('",Suid,"').style.setProperty('display', 'none');",
@@ -82,11 +85,11 @@ render_element(#cipher_sdk{id=Id,class=Class,title=T}) ->
     nitro:wire(#bind{target=Soid,type=click,postback=Logout}),
     nitro:wire(#bind{target=Rid, type=click,postback=Init}),
 
-    nitro:wire(#bind{target=Cid, type=error, postback=OnError}),
-    nitro:wire(#bind{target=Cid, type=session,postback=OnSession}),
-    nitro:wire(#bind{target=Cid, type=status,postback=OnStatus}),
-    nitro:wire(#bind{target=Cid, type=path,postback=OnPath}),
-    nitro:wire(#bind{target=Cid, type=login,postback=OnLogin}),
-    nitro:wire(#bind{target=Cid, type=ca, postback=OnCa}),
+    nitro:wire(#bind{target=Cid, type=error,    postback=OnError}),
+    nitro:wire(#bind{target=Cid, type=session,  postback=OnSession}),
+    nitro:wire(#bind{target=Cid, type=status,   postback=OnStatus}),
+    nitro:wire(#bind{target=Cid, type=path,     postback=OnPath}),
+    nitro:wire(#bind{target=Cid, type=login,    postback=OnLogin}),
+    nitro:wire(#bind{target=Cid, type=ca,       postback=OnCa}),
 
     nitro:render(#panel{id=Cid, class=Class, body=[Title,Form]}).

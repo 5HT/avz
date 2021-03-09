@@ -133,12 +133,12 @@ info(#cph{cid=Cid, cmd=authorities, pld=Json}=Cmd,R,S) ->
     #{<<"ca">>:=Auths} = ?N2O_JSON:decode(Json),
     n2o_pi:cast(async,Cid,Cmd#cph{pld=Auths}),
 
+    CAs = lists:map(fun(#{<<"id">>:=Id, <<"name">>:=Name}) -> #{label=>nitro:jse(Name), value=>Id} end, Auths),
+
     {reply, io(
         nitro:wire(#jq{target=Cid,
             method=["dispatchEvent"],
-            args=[nitro:f("new CustomEvent('ca', {detail: {ca: () => '~s'}})",[Json])]})
-        % nitro:update(auth, #select{id=auth, class=field,
-        %     body=lists:map(fun(#{<<"id">>:=Id, <<"name">>:=Name}) -> #option{label=?R(Name), value=Id} end, Auths) })
+            args=[nitro:f("new CustomEvent('ca', {detail: {ca: () => '~s'}})",[?N2O_JSON:encode(CAs)])]})
     ), R,S};
 
 info(#cph{cid=Cid, cmd=session, pld=Json}, R,S) ->
@@ -218,7 +218,7 @@ info(#cph{cid=Cid, cmd=login, pld=Signer},R,S) ->
     Msg = <<Name/binary, " успішно аутентифіковано"/utf8>>,
     nitro:wire(#jq{target=Cid,
         method=["dispatchEvent"],
-        args=[nitro:f("new CustomEvent('session', {detail: {html: () => '~s'}})", [?R(Msg)])]}
+        args=[nitro:f("new CustomEvent('session', {detail: {html: () => '~s'}})", [nitro:jse(Msg)])]}
     ),
 
     nitro:wire(#jq{target=Cid,
@@ -329,7 +329,7 @@ io(Actions,Ctx) -> {bert, nitro_n2o:io(Actions,Ctx)}.
 session_io(Cid, #{<<"message">>:=Msg}) -> 
     io(nitro:wire(#jq{target=Cid,
         method=["dispatchEvent"],
-        args=[nitro:f("new CustomEvent('session', {detail: {html: () => '~s'}})", [?R(Msg)])]}
+        args=[nitro:f("new CustomEvent('session', {detail: {html: () => '~s'}})", [nitro:jse(Msg)])]}
     )).
 
 xhr(M, C, Cid) -> xhr(M, C, "null", Cid).
