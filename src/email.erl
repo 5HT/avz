@@ -1,32 +1,31 @@
 -module(email).
 -author('Andrii Zadorozhnii').
--include("avz.hrl").
+-description("").
 -include_lib("nitro/include/nitro.hrl").
 -include_lib("n2o/include/n2o.hrl").
--compile(export_all).
--export(?API).
+-include("proto.hrl").
 
-registration_data(Props, email, Ori)->
-  Email = email_prop(Props, email),
-  #{<<"display_name">>:=DisplayName, <<"first_name">>:=FirstName, <<"last_name">>:=LastName,<<"status">>:=Status, <<"type">>:=Type, <<"password">>:=Pass} = Props,
-  #{tokens:=Tokens} = Ori,
-  maps:merge(Ori, #{ display_name => DisplayName,
-            email => Email,
-            names    => FirstName,
-            surnames => LastName,
-            register_date => os:timestamp(),
-            tokens => avz:update({email,Email},Tokens),
-            status => Status,
-            type   => Type,
-            password => avz:sha(Pass)}).
+-export([info/3]).
 
-index(K) -> nitro:to_binary(K).
-email_prop(Props, _) -> maps:get(<<"email">>, Props).
+info(#eml{cid=Cid, cmd=init},R,Ctx) ->
+  {reply,{bert,nitro_n2o:io({init,Cid},Ctx)},R,Ctx};
 
-login_button() -> #button{id=login, body= <<"Sign in">>, postback={email, loginemail}, source=[user,pass]}.
-event({email,loginemail}) -> avz:login(email, [{<<"email">>, nitro:q(user)}, {<<"password">>,nitro:q(pass)}]);
-event(_) -> ok.
-api_event(_,_,_) -> ok.
-callback() -> ok.
-sdk() -> [].
+info(#eml{cid=Cid, cmd=logout}, R,Ctx) ->
+  n2o:user([]),
+  n2o_session:delete({n2o:sid(),token}),
+  {reply,{bert,nitro_n2o:io({logout,Cid},Ctx)},R,Ctx};
 
+info(#eml{cid=Cid, cmd=login, pld=Args},R,#cx{}=Ctx) ->
+  Props = maps:update_with(pass, fun avz:sha/1, [], maps:from_list(Args)),
+  {Ev, Msg} = case nitro_n2o:io({login, Cid, Props},Ctx) of
+    {io,<<>>,{error,E}} -> {error,E};
+    {io,<<>>,{stack,S}} -> {error, protocol};
+    _ -> case n2o:user() of [] -> {error, fail}; _ -> {login, ok} end end,
+
+  {reply, {bert, nitro_n2o:io(nitro:wire(
+    #jq{target=Cid,
+        method=["dispatchEvent"],
+        args=[nitro:f("new CustomEvent('~s', {detail: {data:() => '~s'}})", [Ev,Msg])]}
+    ))},R,Ctx};
+
+info(#eml{}=M,R,S) -> {unknown,M,R,S}.

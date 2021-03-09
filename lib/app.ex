@@ -4,16 +4,12 @@ defmodule Avz.App do
     require Logger
 
     @impl true
-    def init([]) do
-      Supervisor.init([], strategy: :one_for_one)
-    end
+    def init([]), do: Supervisor.init([], strategy: :one_for_one)
 
     @impl true
-    def start(_,arg) do
-      Supervisor.start_link(__MODULE__, arg, name: __MODULE__)
-    end
+    def start(_,arg), do: Supervisor.start_link(__MODULE__, arg, name: __MODULE__)
 
     @impl true
-    def stop(_) do
-    end
+    def stop(_), do: :ok
+
 end

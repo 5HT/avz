@@ -1,9 +1,9 @@
 {application, avz,
  [
   {description, "AVZ Social Auth"},
-  {vsn, "5.10"},
+  {vsn, "6.0.0"},
   {registered, []},
-  {applications, [kernel, stdlib]},
-  {mod, { avz_app, []}},
+  {applications, [kernel, stdlib, asn1, ssl, public_key, oauth, n2o, nitro]},
+  {mod, { avz, []}},
   {env, []}
  ]}.

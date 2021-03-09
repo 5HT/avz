@@ -14,8 +14,3 @@
 -ifndef(AVZ_JSON).
 -define(AVZ_JSON, (application:get_env(avz,json,jsone))).
 -endif.
-
--ifndef(CTX).
--define(CTX, (get(context))).
--endif.
-
