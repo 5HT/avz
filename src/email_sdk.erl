@@ -49,4 +49,4 @@ render_element(#email_sdk{id=Id,class=Class,title=T}) ->
     nitro:wire(#bind{target=Cid, type=login, postback=OnLogin}),
     nitro:wire(#bind{target=Cid, type=error, postback=OnError}),
 
-    nitro:render(#panel{id=Cid,class=Class, body=[Title, Status, Form ]}).
+    nitro:render(#panel{id=Cid,class=Class, body=[Title, Status, Form]}).
