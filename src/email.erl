@@ -13,11 +13,14 @@ info(#eml{cid=Cid, cmd=init},R,Ctx) ->
 info(#eml{cid=Cid, cmd=logout}, R,Ctx) ->
   n2o:user([]),
   n2o_session:delete({n2o:sid(),token}),
+  nitro:wire(#jq{target=Cid,
+      method=["dispatchEvent"],
+      args=["new CustomEvent('logout', {detail: {}})"]}),
   {reply,{bert,nitro_n2o:io({logout,Cid},Ctx)},R,Ctx};
 
-info(#eml{cid=Cid, cmd=login, pld=Args},R,#cx{}=Ctx) ->
+info(#eml{cid=Cid, cmd=Cmd, pld=Args},R,#cx{}=Ctx) when Cmd=:=login orelse Cmd=:=register ->
   Props = maps:update_with(pass, fun avz:sha/1, [], maps:from_list(Args)),
-  {Ev, Msg} = case nitro_n2o:io({login, Cid, Props},Ctx) of
+  {Ev, Msg} = case nitro_n2o:io({Cmd, Cid, Props},Ctx) of
     {io,<<>>,{error,E}} -> {error,E};
     {io,<<>>,{stack,S}} -> {error, protocol};
     _ -> case n2o:user() of [] -> {error, fail}; _ -> {login, ok} end end,
