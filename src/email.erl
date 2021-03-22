@@ -23,7 +23,9 @@ info(#eml{cid=Cid, cmd=Cmd, pld=Args},R,#cx{}=Ctx) when Cmd=:=login orelse Cmd=:
   {Ev, Msg} = case nitro_n2o:io({Cmd, Cid, Props},Ctx) of
     {io,<<>>,{error,E}} -> {error,E};
     {io,<<>>,{stack,S}} -> {error, protocol};
-    _ -> case n2o:user() of [] -> {error, fail}; _ -> {login, ok} end end,
+    {io, Act,_} ->
+      nitro:wire(Act),
+      case n2o:user() of [] -> {error, fail}; _ -> {login, ok} end end,
 
   {reply, {bert, nitro_n2o:io(nitro:wire(
     #jq{target=Cid,
