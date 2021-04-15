@@ -3,8 +3,9 @@
 %
 -ifdef(ELEMENT_BASE).
 
--record(email_sdk,  { ?ELEMENT_BASE(email_sdk) }).
--record(cipher_sdk, { ?ELEMENT_BASE(cipher_sdk)}).
+-record(email_sdk,      { ?ELEMENT_BASE(email_sdk) }).
+-record(cipher_sdk,     { ?ELEMENT_BASE(cipher_sdk) }).
+-record(telegram_sdk,   { ?ELEMENT_BASE(telegram_sdk) }).
 
 -endif.
 

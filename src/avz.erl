@@ -18,6 +18,7 @@ stop(_)     -> ok.
 info(#avz{cid=Cid, cmd=init}=M,R,Ctx) -> {reply,{bert,nitro_n2o:io([],Ctx)},R,Ctx};
 info(#eml{}=M,R,S) -> email:info(M,R,S);
 info(#cph{}=M,R,S) -> cipher:info(M,R,S);
+info(#tlg{}=M,R,S) -> telegram:info(M,R,S);
 info(M,R,S) -> {unknown,M,R,S}.
 
 sha(Pass) ->

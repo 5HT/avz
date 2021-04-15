@@ -26,3 +26,4 @@
 -record(avz, { ?AVZ }).
 -record(eml, { ?AVZ }).
 -record(cph, { ?AVZ }).
+-record(tlg, { ?AVZ }).
