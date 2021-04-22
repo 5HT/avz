@@ -25,7 +25,7 @@ info(#tlg{cid=Cid, cmd=login, pld=Args},R,Ctx) ->
                 {io,<<>>,{stack,S}} -> {error, protocol};
                 {io,Act,_}->
                   nitro:wire(Act),
-                  case n2o:user() of [] -> {error, fail};_->{login, ok} end
+                  case n2o:user() of [] -> {error, fail};_-> {login, ok} end
               end;
           _ -> {error, hash}
         end;
@@ -38,4 +38,12 @@ info(#tlg{cid=Cid, cmd=login, pld=Args},R,Ctx) ->
         args=[nitro:f("new CustomEvent('~s', {detail: {data:() => '~s'}})", [Ev,Msg])]}
       ))},R,Ctx};
 
+info(#tlg{cid=Cid, cmd=logout}, R,Ctx) ->
+  n2o:user([]),
+  n2o_session:delete({n2o:sid(),token}),
+  nitro:wire(#jq{target=Cid,
+      method=["dispatchEvent"],
+      args=["new CustomEvent('logout', {detail: {}})"]}),
+  {reply,{bert,nitro_n2o:io({logout,Cid},Ctx)},R,Ctx};
+      
 info(M,R,S) -> {unknown, M, R, S}.
