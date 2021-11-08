@@ -1,8 +1,9 @@
 {application, avz,
  [
   {description, "AVZ Social Auth"},
-  {vsn, "5.10"},
+  {vsn, "8.11.0"},
   {registered, []},
+  {licenses, ["ISC"]},
   {applications, [kernel, stdlib]},
   {mod, { avz_app, []}},
   {env, []}
